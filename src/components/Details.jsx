@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getDatabase, ref, get } from 'firebase/database';
 import Nav from './Nav';
-import Shop from './Shop';
 import './Details.css';
 
 
