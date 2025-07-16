@@ -1,0 +1,13 @@
+.gallery {
+    padding: 20px;
+}
+
+.image-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.image {
+    width: 150px;
+}
