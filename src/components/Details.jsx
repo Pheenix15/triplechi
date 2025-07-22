@@ -11,6 +11,7 @@ function Details() {
     const [similarProducts, setSimilarProducts] = useState([]); // SIMILAR PRODUCT
     const [displayedImage, setDisplayedImage] = useState(null); //SET DISPLAYED IMAGE TO THE CLICKED PRODUCT
     const [size, setSize] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('')
 
     const variations = ['S', 'M', 'L', 'XL', 'XXL'];
 
@@ -27,7 +28,8 @@ function Details() {
                     console.log('ITEM NOT FOUND')
                 }
             })
-            .catch(err => console.error(err));
+        .catch(err => setErrorMessage(err));
+
     }, [id]);
 
     // GETTING SIMILAR PRODUCTS FROM THE DATABASE
@@ -68,8 +70,11 @@ function Details() {
         }
     }, [product]);
 
+
     if (!product) {
         return <p>Loading...</p>
+    } else if (!product && errorMessage) {
+        return <p>{errorMessage}</p>
     }
 
     

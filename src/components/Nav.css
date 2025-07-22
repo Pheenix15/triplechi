@@ -1,16 +1,48 @@
 .nav {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 30px;
-    color: white;
+    padding: 20px 30px;
+    color: var(--white);
     background: black;
 }
 
-.cart-btn {
-    color: white;
+.title-logo {
+    width: 60px;
+}
+
+.navbar {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-button {
+    color: var(--white);
     background-color: transparent;
     border: none;
     font-size: 20px;
+}
+
+.user-box {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 251px;
+    height: 200px;
+    padding-top: 20px;
+    background-color: var(--white);
+    color: var(--black);
+    top: 100%;
+    right: 0;
+    z-index: 2;
+}
+
+.user-box-bottom {
+    background-color: var(--firstPurple);
+    color: var(--white);
+    border-radius: 0;
+    box-shadow: none;
 }
 

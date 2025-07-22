@@ -5,6 +5,8 @@ import Shop from './components/Shop';
 import Details from './components/Details';
 import Gallery from './components/Gallery';
 import Cart from './components/Cart';
+import Signup from './components/Signup';
+import Login from './components/Login';
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
         <Route path='/Details/:id' Component={Details} />
         <Route path='/Gallery' Component={Gallery} />
         <Route path='/Cart' Component={Cart} />
+        <Route path='/Signup' Component={Signup} />
+        <Route path='/Login' Component={Login} />
 
         {/* 404 fallback */}
         <Route path="*" element={<h2>Page Not Found</h2>} />

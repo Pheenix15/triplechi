@@ -10,6 +10,7 @@
   --firstTransparentPurple: rgba(128, 0, 150, 0.6);
   --secondTransparentPurple: rgba(105, 36, 215, 0.3);
   --thirdTransparentPurple: rgba(80, 22, 202, 0.3);
+  --error: red;
 }
 
 html {
@@ -39,6 +40,10 @@ body {
   color: var(--darkgray);
 }
 
+.tiny {
+  font-size: 0.8em;
+}
+
 p {
   font-family: "Roboto", sans-serif;
 }
@@ -46,3 +51,11 @@ p {
 a {
   text-decoration: none;
 }
+
+.error {
+  color: var(--error);
+}
+
+
+/* FORM STYLE */
+
