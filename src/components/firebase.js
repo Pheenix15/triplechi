@@ -3,16 +3,22 @@ import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth"; //FIREBASE AUTHENTICATION
 
 
+const databaseURL = process.env.REACT_APP_DATABASE_URL;
+const apiKey = process.env.REACT_APP_API_KEY;
+const authDomain = process.env.REACT_APP_AUTH_DOMAIN;
+const projectId = process.env.REACT_APP_PROJECT_ID;
+const storageBucket = process.env.REACT_APP_STORAGE_BUCKET;
+const messagingSenderId = process.env.REACT_APP_MESSAGING_SENDER_ID;
+const appId = process.env.REACT_APP_APP_ID;
+
 const firebaseConfig = {
-  databaseURL: "https://playground-4ad23-default-rtdb.firebaseio.com/",
-  apiKey: "AIzaSyADMYkD_xNAizLhH6sk0TRH4osaSwxgDjA",
-  authDomain: "playground-4ad23.firebaseapp.com",
-  projectId: "playground-4ad23",
-  storageBucket: "playground-4ad23.firebasestorage.app",
-  messagingSenderId: "660442546356",
-  appId: "1:660442546356:web:e8c95347d97372054157e1"
-
-
+  databaseURL,
+  apiKey,
+  authDomain,
+  projectId,
+  storageBucket,
+  messagingSenderId,
+  appId
 };
 
 // Initialize Firebase
