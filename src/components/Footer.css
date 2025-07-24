@@ -1,0 +1,79 @@
+.footer {
+    box-sizing: border-box;
+    width: 100%;
+    background-color: var(--black);
+    color: var(--white);
+    padding: 20px 35px;
+}
+
+.footer-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.footer-details details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.footer-logo {
+    width: 80px;
+}
+
+.useful-links .links a {
+    color: var(--white);
+    margin: 0 7px;
+}
+
+.payment-methods {
+    display: flex;
+    gap: 8px;
+    width: 50px;
+}
+
+.payment-methods img {
+    transition: filter 0.3s ease;
+    cursor: pointer;
+}
+
+.payment-methods img:hover {
+    filter: grayscale(100%);
+}
+
+.copyright {
+    padding-top: 15px;
+    border-top: 1px solid transparent;
+    border-image: linear-gradient(to right, transparent, var(--firstPurple), transparent) 1;
+}
+
+.copyright .tiny {
+    margin: 0;
+}
+
+/* MOBILE VIEW */
+@media (max-width: 426px) {
+    .footer {
+        padding: 20px
+    }
+    .footer-logo {
+        width: 65px;
+    }
+
+    .details h3 {
+        margin: 10px 0;
+        font-size: 1em;
+    }
+
+    .useful-links .links a {
+        font-size: 0.7em;
+        margin: 0 7px;
+    }y
+
+    .payment-methods {
+        gap: 8px;
+        width: 40px;
+    }
+}

@@ -45,7 +45,7 @@ function Nav() {
 
     return ( 
         <div className="nav">
-            <div className="title-logo"><img src="../img/logo-2.png" alt="triplechi Logo" /></div>
+            <div className="title-logo"><Link to={'/'} ><img src="../img/logo-2.png" alt="triplechi Logo" /></Link></div>
             <nav className="navbar">
                 {/* SIGNUP/LOGIN */}
                 <button className="nav-button auth-btn" onClick={toggleBox} ><i className="fa-solid fa-user"></i></button>

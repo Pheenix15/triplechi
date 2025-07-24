@@ -161,6 +161,12 @@
         padding-top: 10px;
     }
 
+    .product-detail-image-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
     .product-detail-image {
         width: 60%;
         background-color: var(--white);
@@ -175,6 +181,10 @@
         width: 100%;
         margin: 10px 0;
         padding-left: 20px;
+    }
+
+    .product-detail-container {
+        padding: 20px;
     }
 
     .product-detail-details {
@@ -226,8 +236,14 @@
         padding: 15px 30px;
         width: 100%;
     }
-}
-.product-detail-page {
-    
+
+    .similar-product-list {
+        overflow-x: scroll;
+    }
+
+    .similar-product-card-description {
+        margin-bottom: 0;
+        font-size: 0.8em;
+    }
 }
 

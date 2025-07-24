@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getDatabase, ref, get } from 'firebase/database';
+import { auth, database } from './firebase';
+import { getDatabase, ref, get, push, set } from 'firebase/database';
 import Nav from './Nav';
+import Footer from './Footer';
 import './Details.css';
 
 
@@ -11,7 +13,8 @@ function Details() {
     const [similarProducts, setSimilarProducts] = useState([]); // SIMILAR PRODUCT
     const [displayedImage, setDisplayedImage] = useState(null); //SET DISPLAYED IMAGE TO THE CLICKED PRODUCT
     const [size, setSize] = useState(null);
-    const [errorMessage, setErrorMessage] = useState('')
+    const [failAlert, setFailAlert] = useState(''); //STATE FOR ERROR ALERTS
+    const [successAlert, setSuccessAlert] = useState('') //STATE FOR SUCCESS ALERTS
 
     const variations = ['S', 'M', 'L', 'XL', 'XXL'];
 
@@ -28,7 +31,8 @@ function Details() {
                     console.log('ITEM NOT FOUND')
                 }
             })
-        .catch(err => setErrorMessage(err));
+        .catch(err => setFailAlert(err));
+        setTimeout(() => setFailAlert(''), 3000);
 
     }, [id]);
 
@@ -58,7 +62,8 @@ function Details() {
                     setSimilarProducts(randomFour);
                 }
             })
-            .catch(err => console.error(err));
+            .catch(err => setFailAlert(err));
+            setTimeout(() => setFailAlert(''), 3000)
     }, [id])
 
     // FOR CHANGING THE DISPLAYED IMAGE
@@ -73,8 +78,8 @@ function Details() {
 
     if (!product) {
         return <p>Loading...</p>
-    } else if (!product && errorMessage) {
-        return <p>{errorMessage}</p>
+    } else if (!product && failAlert) {
+        return <p>{failAlert}</p>
     }
 
     
@@ -88,27 +93,76 @@ function Details() {
 
     //ADD TO CART
 
-    const handleAddToCart = () => {
-        //DETAILS TO BE ADDED TO CART
-        const cartItem = {
-            id,
-            name: product.name,
-            price: product.price,
-            size,
-            image: displayedImage,
-            quantity: 1,
+    const handleAddToCart = async () => {
+        const tripleChiUser = auth.currentUser
+
+        // CLEARS ANY PREVIOUS ALERTS
+        setSuccessAlert("");
+        setFailAlert("");
+
+        // CHECKS THAT USER IS LOGGED IN
+        if (!tripleChiUser) {
+            setFailAlert("you must be logged in to add items to your cart.")
+            setTimeout(() => setFailAlert(''), 3000)
+            return;
         }
 
-        // ADD CARTITEM TO LOCALSTORAGE AND CONVERT TO ARRAY
-        const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
-        localStorage.setItem('cart', JSON.stringify([...existingCart, cartItem]));
 
-        alert("Item added to cart");
+        // GETS REF TO USERS CART LOCATION IN THE DATABASE
+        const userCartRef = ref(database, `ShoppingCart/${tripleChiUser.uid}`);
+
+        try {
+            const snapshot = await get(userCartRef);
+            const userCartData = snapshot.val();
+
+            // RUNS THROUGH USERCARTDATA AND CHECKS FOR DUPLICATE (LIKE A FOR LOOP)
+            const isDuplicate = userCartData ? Object.values(userCartData).some(item => item.id === id && item.size === size) : false;
+
+            if(isDuplicate) {
+                setFailAlert("Item already in cart")
+                setTimeout(() => setFailAlert(""), 3000)
+                return;
+            }
+
+            //DETAILS TO BE ADDED TO CART
+            const cartItem = {
+                id,
+                name: product.name,
+                price: product.price,
+                size,
+                image: displayedImage,
+                quantity: 1,
+                unixTimestamp: Date.now(),
+                addedAt: new Date().toLocaleString(),
+            }
+
+            // PUSH ITEMS TO SHOPPINGCART DATABASE
+            const newUserCartRef = push(userCartRef);
+            await set(newUserCartRef, cartItem);
+
+            setSuccessAlert("Item added to cart");
+            setTimeout(() => setSuccessAlert(""), 3000)
+        } catch (err) {
+            setFailAlert("Failed to add item: " + err.message);
+            setTimeout(() => setFailAlert(""), 3000);
+        }
+
+
     };
 
     return ( 
         <div className="product-detail-page">
             <Nav />
+
+            {/* DISPLAY ALERTS */}
+            {successAlert && (
+                <div className="alert success-alert">{successAlert}</div>
+            )}
+
+            {failAlert && (
+                <div className="alert fail-alert">{failAlert}</div>
+            )}
+
             <div className="product-detail-container">
                 <div className="product-detail">
                     <div className="product-detail-image-container">
@@ -201,7 +255,8 @@ function Details() {
                     </div>
                 </div>
             </div>
-
+        
+            <Footer />
         </div>
      );
 }

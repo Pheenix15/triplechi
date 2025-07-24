@@ -6,3 +6,27 @@ img {
   width: 100%;
   height: auto;
 }
+
+.alert {
+  box-sizing: border-box;
+  position: absolute;
+  width: 100%;
+  padding: 15px;
+  z-index: 100;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.success-alert {
+  background-color: var(--firstPurple);
+  color: var(--white);
+}
+
+.fail-alert {
+  background-color: var(--error);
+  color: var(--white);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
