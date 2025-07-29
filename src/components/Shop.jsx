@@ -2,9 +2,11 @@ import { database } from "./firebase";
 import { ref, onValue } from "firebase/database";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useCurrency } from "../context/CurrencyContext";
 import Nav from "./Nav";
 import Footer from "./Footer";
 import './Shop.css'
+import CurrencySwitcher from "../context/CurrencySwitcher";
 
 
 function Shop() {
@@ -36,12 +38,24 @@ function Shop() {
         return () => productInDB();
     }, []);
 
+    // CURRENCY CONVERTER
+    const Price = ({ amountInDollars }) => {
+        const { currency } = useCurrency();
+
+        const convertToNaira = (usd) => usd * 1500; // Use actual conversion API or static rate
+        const displayAmount =
+            currency === "NGN"
+                ? `₦${convertToNaira(amountInDollars).toLocaleString()}`
+                : `$${amountInDollars.toFixed(2)}`;
+
+        return <span>{displayAmount}</span>;
+    };
 
     return ( 
         <div className="shop">
             <Nav />
             <div className="product-list-container">
-
+                <CurrencySwitcher />
                 <div className="product-list">
                     {shopProduct.map((product) => (
                         <div className="mapped-product-container" key={product.id} >
@@ -51,7 +65,7 @@ function Shop() {
                                 </div>
                                 
                                 <p className="product-description" >{product.description}</p>
-                                <p className="product-price">&#8358;{product.price}</p>
+                                <p className="product-price"><Price amountInDollars={product.price} /></p>
                             </div>
                             
 

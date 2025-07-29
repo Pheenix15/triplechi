@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { auth, database } from './firebase';
-import { getDatabase, ref, get, push, set } from 'firebase/database';
+import { getDatabase, ref, get, set, remove } from 'firebase/database';
+import { useCurrency } from '../context/CurrencyContext';
 import Nav from './Nav';
 import Footer from './Footer';
 import './Details.css';
@@ -100,31 +101,69 @@ function Details() {
         setSuccessAlert("");
         setFailAlert("");
 
-        // CHECKS THAT USER IS LOGGED IN
-        if (!tripleChiUser) {
-            setFailAlert("you must be logged in to add items to your cart.")
-            setTimeout(() => setFailAlert(''), 3000)
-            return;
-        }
+        // SAVE CART TO LOCALSTORAGE
+        const getCartFromLocalStorage = () => {
+            try {
+                const cart = localStorage.getItem('tripleChiCart');
+                return cart ? JSON.parse(cart) : [];
+            } catch (error) {
+                console.error('Error parsing cart from localStorage:', error);
+                return [];
+            }
+        };
 
+        const saveCartToLocalStorage = (items) => {
+            try {
+                localStorage.setItem('tripleChiCart', JSON.stringify(items));
+            } catch (error) {
+                console.error('Error saving cart to localStorage:', error);
+            }
+        };
 
-        // GETS REF TO USERS CART LOCATION IN THE DATABASE
-        const userCartRef = ref(database, `ShoppingCart/${tripleChiUser.uid}`);
+        // SYNC LOCAL CART TO DATABASE (for logged-in users)
+        const syncCartToDatabase = async (cartItems) => {
+            if (tripleChiUser) {
+                try {
+                    const cartRef = ref(database, `ShoppingCart/${tripleChiUser.uid}`);
+                    
+                    if (cartItems.length === 0) {
+                        await remove(cartRef);
+                    } else {
+                        const cartObject = {};
+                        cartItems.forEach((item, index) => {
+                            const itemKey = item.shoppingCartKey || `${item.name}_${item.size}_${index}`.replace(/\s+/g, '_');
+                            cartObject[itemKey] = {
+                                id: item.id,
+                                name: item.name,
+                                price: item.price,
+                                size: item.size,
+                                image: item.image,
+                                quantity: item.quantity,
+                                unixTimestamp: item.unixTimestamp,
+                                addedAt: item.addedAt
+                            };
+                        });
+                        await set(cartRef, cartObject);
+                    }
+                } catch (error) {
+                    console.error('Error syncing cart to database:', error);
+                }
+            }
+        };
 
         try {
-            const snapshot = await get(userCartRef);
-            const userCartData = snapshot.val();
+            // GET CURRENT CART FROM LOCALSTORAGE
+            const currentCart = getCartFromLocalStorage();
 
-            // RUNS THROUGH USERCARTDATA AND CHECKS FOR DUPLICATE (LIKE A FOR LOOP)
-            const isDuplicate = userCartData ? Object.values(userCartData).some(item => item.id === id && item.size === size) : false;
+            // CHECK FOR DUPLICATE ITEMS (same id and size)
+            const isDuplicate = currentCart.some(item => item.id === id && item.size === size);
 
-            if(isDuplicate) {
-                setFailAlert("Item already in cart")
-                setTimeout(() => setFailAlert(""), 3000)
+            if (isDuplicate) {
+                setFailAlert("Item already in cart");
+                setTimeout(() => setFailAlert(""), 3000);
                 return;
             }
 
-            //DETAILS TO BE ADDED TO CART
             const cartItem = {
                 id,
                 name: product.name,
@@ -134,20 +173,45 @@ function Details() {
                 quantity: 1,
                 unixTimestamp: Date.now(),
                 addedAt: new Date().toLocaleString(),
+                // Don't add shoppingCartKey here - it will be added when syncing to database
+            };
+
+            // ADD ITEM TO CART ARRAY
+            const updatedCart = [...currentCart, cartItem];
+
+            // SAVE TO LOCALSTORAGE
+            saveCartToLocalStorage(updatedCart);
+
+            // SYNC TO DATABASE IF USER IS LOGGED IN
+            if (tripleChiUser) {
+                await syncCartToDatabase(updatedCart);
             }
 
-            // PUSH ITEMS TO SHOPPINGCART DATABASE
-            const newUserCartRef = push(userCartRef);
-            await set(newUserCartRef, cartItem);
+            // SUCCESS MESSAGE
+            if (tripleChiUser) {
+                setSuccessAlert("Item added to cart and saved to your account");
+            } else {
+                setSuccessAlert("Item added to cart");
+            }
+            setTimeout(() => setSuccessAlert(""), 3000);
 
-            setSuccessAlert("Item added to cart");
-            setTimeout(() => setSuccessAlert(""), 3000)
         } catch (err) {
             setFailAlert("Failed to add item: " + err.message);
             setTimeout(() => setFailAlert(""), 3000);
         }
 
+    };
 
+    // CURRENCY SWITCHING
+    const Price = ({ amountInDollars }) => {
+        const { currency, exchangeRate } = useCurrency();
+
+        const displayAmount =
+            currency === "NGN"
+                ? `₦${(amountInDollars * exchangeRate).toLocaleString()}`
+                : `$${amountInDollars.toFixed(2)}`;
+
+        return <span>{displayAmount}</span>;
     };
 
     return ( 
@@ -186,7 +250,7 @@ function Details() {
                     <div className="details-section">
                         <div className="product-detail-details">
                             <p className="product-detail-description">{product.name}</p>
-                            <p className="product-detail-price">&#8358;{product.price}</p>
+                            <p className="product-detail-price"><Price amountInDollars={product.price}/></p>
                             <p className={product.stock === 0 ? "outOfStock" : "inStock"}>
                                 {getStockStatus(product.stock)}
                             </p>
@@ -245,7 +309,7 @@ function Details() {
                                 <div className="similar-product-card-details">
                                     <p className="similar-product-card-description" >{similarProduct.description}</p>
 
-                                    <p className="similar-product-card-price">&#8358;{similarProduct.price}</p>
+                                    <p className="similar-product-card-price"><Price amountInDollars={similarProduct.price}/></p>
                                 </div>
                                 
                                 </Link>

@@ -5,20 +5,24 @@ import Shop from './components/Shop';
 import Details from './components/Details';
 import Gallery from './components/Gallery';
 import Cart from './components/Cart';
+import Checkout from './components/Checkout';
 import Signup from './components/Signup';
 import Login from './components/Login';
 import ReturnRefundPolicy from './components/Return-Refund-Policy';
 import PrivacyPolicy from './components/Privacy-Policy';
+import { CurrencyProvider } from './context/CurrencyContext';
 
 function App() {
   return (
     <div className="App">
+      <CurrencyProvider>
       <Routes>
         <Route path='/' Component={Home} />
         <Route path='/Shop' Component={Shop} />
         <Route path='/Details/:id' Component={Details} />
         <Route path='/Gallery' Component={Gallery} />
         <Route path='/Cart' Component={Cart} />
+        <Route path='/Checkout' Component={Checkout} />
         <Route path='/Signup' Component={Signup} />
         <Route path='/Login' Component={Login} />
         <Route path='/Return-Refund-Policy' Component={ReturnRefundPolicy} />
@@ -27,7 +31,7 @@ function App() {
         {/* 404 fallback */}
         <Route path="*" element={<h2>Page Not Found</h2>} />
       </Routes>
-      
+      </CurrencyProvider>
     </div>
   );
 }

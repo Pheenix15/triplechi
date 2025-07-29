@@ -7,6 +7,7 @@
     background-image: url(../img/desktop-bkg.png);
     background-position: bottom;
     background-size: cover;
+    overflow: hidden;
 }
 
 .logo {
@@ -77,6 +78,9 @@
 @media (max-width: 426px) {
     .home {
         background-image: url(../img/mobile-bkg.png);
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .buttons {
@@ -85,5 +89,6 @@
         margin: 0 auto;
         z-index: 2;
     }
+
 
 }
