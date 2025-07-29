@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ref, remove, set, get } from 'firebase/database';
 import { auth, database } from './firebase';
@@ -38,7 +38,7 @@ function Cart() {
     };
 
     // SYNC LOCALSTORAGE TO DB
-    const syncLocalCartToDatabase = async (items) => {
+    const syncLocalCartToDatabase = useCallback(async (items) => {
         if (tripleChiUser) {
             try {
                 const cartRef = ref(database, `ShoppingCart/${tripleChiUser.uid}`);
@@ -69,7 +69,7 @@ function Cart() {
                 console.error('Error syncing cart to database:', error);
             }
         }
-    };
+    }, [tripleChiUser]);
 
     // const clearLocalStorageCart = () => {
     //     localStorage.removeItem('tripleChiCart');
@@ -84,7 +84,7 @@ function Cart() {
     }, [])
 
     // LOAD CART FROM DATABASE (FOR WHEN LOCALSTORAGE IS EMPTY)
-    const loadCartFromDatabase = async () => {
+    const loadCartFromDatabase = useCallback(async () => {
         if (tripleChiUser) {
             try {
                 const cartRef = ref(database, `ShoppingCart/${tripleChiUser.uid}`);
@@ -115,7 +115,7 @@ function Cart() {
         } else {
             setCartItems([]);
         }
-    }
+    }, [tripleChiUser]); //useCallback IS USED TO STOP useEffect FROM RUNNING EVERYTIME
 
 
     // RETRIVES CART FROM LOCALSTORAGE THEN DATABASE(DB) IF LOCALSTORAGE IS EMPTY
