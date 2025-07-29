@@ -144,7 +144,7 @@ function Cart() {
         };
 
         loadCart()
-    }, [tripleChiUser]);
+    }, [tripleChiUser, loadCartFromDatabase, syncLocalCartToDatabase]);
 
     // REMOVE CARTITEMS FROM DATABASE AND UI
     const handleDelete = async (index) => {
