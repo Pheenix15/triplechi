@@ -1,14 +1,13 @@
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ref, remove, set, get } from 'firebase/database';
 import { auth, database } from './firebase';
 import { useCurrency } from '../context/CurrencyContext';
 import Nav from './Nav';
+import Loading from './Loading';
 import Footer from './Footer';
 import './Cart.css'
-// import { sendCheckoutEmail } from './form';
 import { onAuthStateChanged } from 'firebase/auth';
-import CurrencySwitcher from '../context/CurrencySwitcher';
 
 function Cart() {
     const [tripleChiUser, setTripleChiUser] = useState(null)
@@ -71,9 +70,6 @@ function Cart() {
         }
     }, [tripleChiUser]);
 
-    // const clearLocalStorageCart = () => {
-    //     localStorage.removeItem('tripleChiCart');
-    // };
 
     // CHECKS IF USER IS LOGGED IN
     useEffect(() => {
@@ -205,35 +201,6 @@ function Cart() {
         return cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
     }
     
-    
-
-
-    //PAYSTACK CHECKOUT
-    // const handlePaystackCheckout = () => {
-    //     const paystack = new PaystackPop();
-
-    //     const totalAmount = Math.floor(Number(calculateSubtotal()) * 100);
-    //     console.log('Paystack amount:', totalAmount, typeof totalAmount);
-
-    //     paystack.newTransaction({
-    //         key: process.env.REACT_APP_PAYSTACK_KEY,
-    //         email: tripleChiUserDetails.email,
-    //         amount: totalAmount,
-    //         metadata: {
-    //             name: `${tripleChiUserDetails.firstName} ${tripleChiUserDetails.lastName}`,
-    //             phone: tripleChiUserDetails.phoneNumber,
-    //             address: tripleChiUserDetails.address,
-    //         },
-    //         onSuccess: (transaction) => {
-    //             console.log(`Payment Success: ${transaction}`);
-    //             sendCheckoutEmail(tripleChiUserDetails, cartItems, transaction, totalAmount)
-    //             //transaction IS CALLED transactionRef IN FORM.JS
-    //         },
-    //         onCancel: () => {
-    //             console.log("Payment Canclled");
-    //         }
-    //     });
-    // };
 
     // CURRENCY SWITCHING
     const Price = ({ amountInDollars }) => {
@@ -251,9 +218,7 @@ function Cart() {
     if (isLoading) {
         return (
             <div className="cart">
-                <Nav />
-                <div className="loading">Loading cart...</div>
-                <Footer />
+                <Loading/>
             </div>
         );
     }
@@ -272,8 +237,6 @@ function Cart() {
             
 
             <div className="cart-content">
-                {/* CURRENCY SWITCHER */}
-                <CurrencySwitcher /> 
                 <h2 className="cart-heading">Your Cart</h2>
                 {cartItems.length === 0 ? (
                     // CART IS EMPTY

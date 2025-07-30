@@ -104,10 +104,11 @@
 .similar-product-card {
     width: 350px;
     cursor: pointer;
+    transition: 0.5s ease;
 }
 
 .similar-product-card:hover {
-    border: 1px solid var(--firstPurple);
+    box-shadow: 0 0 5px 0 var(--firstPurple);
     border-radius: 5px;
 }
 

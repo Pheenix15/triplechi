@@ -6,14 +6,15 @@ import { useCurrency } from "../context/CurrencyContext";
 import Nav from "./Nav";
 import Footer from "./Footer";
 import './Shop.css'
-import CurrencySwitcher from "../context/CurrencySwitcher";
+import Loading from "./Loading";
 
 
 function Shop() {
-
+    const [isLoading, setIsLoading] = useState(true); //LOADING STATE
     const [shopProduct, setShopProduct] = useState([]);//PRODUCTS FROM FIREBASE
 
     useEffect(() => {
+        setIsLoading(true);
         // REF TO FIREBASE REALTIME DATABASE
         const productRef = ref(database, 'Product');
 
@@ -34,6 +35,8 @@ function Shop() {
             }
         });
 
+        setIsLoading(false)
+
         // Clean up the listener on unmount
         return () => productInDB();
     }, []);
@@ -51,31 +54,37 @@ function Shop() {
         return <span>{displayAmount}</span>;
     };
 
+    // LOADING SCREEN
+    if (isLoading) {
+        return (
+            <div className="cart">
+                <Loading />
+            </div>
+        );
+    }
+
     return ( 
         <div className="shop">
             <Nav />
             <div className="product-list-container">
-                <CurrencySwitcher />
                 <div className="product-list">
                     {shopProduct.map((product) => (
                         <div className="mapped-product-container" key={product.id} >
-                            <div className="product-box" >
-                                <div className="product-image">
-                                    <img src= {product.image} alt={product.description} />
-                                </div>
-                                
-                                <p className="product-description" >{product.description}</p>
-                                <p className="product-price"><Price amountInDollars={product.price} /></p>
-                            </div>
-                            
-
-                            {/* ADD TO CART BUTTON */}
                             <Link
                                 key={product.id}
                                 to={`/Details/${product.id}`}
                                 className="add-to-cart-link"
                             >
-                                <button className="button add-to-cart-btn">Add to Cart</button>
+
+                                <div className="product-box" >
+                                    <div className="product-image">
+                                        <img src= {product.image} alt={product.description} />
+                                    </div>
+                                    
+                                    <p className="product-description" >{product.description}</p>
+                                    <p className="product-price"><Price amountInDollars={product.price} /></p>
+                                </div>
+                            
                             </Link>
                             
                         </div>

@@ -1,14 +1,21 @@
 .checkout {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0 30px;
+    align-items: start;
+    margin: 30px 0;
+    gap: 30px;
 }
 
 .checkout-cart-item {
     display: flex;
-    align-items: center;
-    gap: 25px;
+    align-items: flex-start;
+    justify-content: space-between;
+    border-bottom: 1px solid transparent;
+    border-image: linear-gradient(to right, transparent, var(--firstPurple), transparent) 1;
+    margin-top: 15px;
+    padding: 10px 5px;
+    width: 80%;
 }
 
 .checkout-cart-image {
@@ -17,17 +24,70 @@
 
 .checkout-cart-details {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     text-align: left;
+    gap: 20px;
+}
+
+.checkout-cart-details-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.checkout-cart-details-info p {
+    margin-top: 0;
 }
 
 .checkout-cart-details-specs {
     display: flex;
-    gap: 15px;
+    justify-content: space-between;
+    width: 120px;
 }
 
-.checkout-cart-details-specs p {
+.checkout-cart-price p {
     margin-top: 0;
+}
+
+.checkout-total-cost {
+    width: 80%;
+    margin-top: 20px;
+}
+
+.expense {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+/* FORM */
+
+.checkout-form {
+    box-shadow: none !important;
+    background-color: var(--lightgray);
+}
+
+@media (max-width: 769px) {
+     .checkout {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 20px;
+        gap: 30px;
+    }
+
+    .checkout-cart-summary {
+        width: 80%;
+    }
+
+    .checkout-cart-item {
+        width: 100%;
+    }
+
+    .checkout-total-cost {
+        width: 100%;
+    }
 }
 
 @media (max-width: 426px) {
@@ -36,9 +96,15 @@
         flex-direction: column;
         align-items: center;
         padding: 0 20px;
+        gap: 30px;
     }
 
-    .checkout-cart-summery {
+    .checkout-cart-summary {
         width: 95%;
+    }
+
+    /* FORM */
+    .checkout-form {
+        width: 85%;
     }
 }

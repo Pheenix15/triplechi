@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import CurrencySwitcher from '../context/CurrencySwitcher';
 import { auth } from './firebase';
 import './Nav.css'
 
@@ -50,14 +51,22 @@ function Nav() {
                 {/* SIGNUP/LOGIN */}
                 <button className="nav-button auth-btn" onClick={toggleBox} ><i className="fa-solid fa-user"></i></button>
                 {/* CART */}
-                <Link to={'/Cart'} ><button className='nav-button cart-btn' ><i className="fa-solid fa-cart-shopping"></i></button></Link>
+                <Link to={window.location.pathname === '/Cart' || window.location.pathname === '/Checkout' ? '/Shop' : '/Cart'} ><button className='nav-button cart-btn' >{
+                        window.location.pathname === '/Cart' || window.location.pathname === '/Checkout' ? (<i className="fa-solid fa-shop"></i>) : (<i className="fa-solid fa-cart-shopping"></i>)            
+                    }</button></Link>
             </nav>
             {userBox && (
                 <div className="user-box">
-                    <div className="user-box-info">
-                        <i className="fa-solid fa-circle-user"></i>
-                        <p>{user ? user.email : "Guest"}</p>
+                    <div className="user-box-content">
+                        <div className="user-box-info">
+                            <i className="fa-solid fa-circle-user"></i>
+                            <p>{user ? user.email : "Guest"}</p>
+                        </div>
+
+                        {/* CURRENCY SWITCHER */}
+                        <CurrencySwitcher />
                     </div>
+                    
 
                     <button className="button user-box-bottom" onClick={() => {
                         if (user) {

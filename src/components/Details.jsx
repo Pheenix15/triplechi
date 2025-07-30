@@ -6,6 +6,7 @@ import { useCurrency } from '../context/CurrencyContext';
 import Nav from './Nav';
 import Footer from './Footer';
 import './Details.css';
+import Loading from './Loading';
 
 
 function Details() {
@@ -17,7 +18,7 @@ function Details() {
     const [failAlert, setFailAlert] = useState(''); //STATE FOR ERROR ALERTS
     const [successAlert, setSuccessAlert] = useState('') //STATE FOR SUCCESS ALERTS
 
-    const variations = ['S', 'M', 'L', 'XL', 'XXL'];
+    const variations = ['M', 'L', 'XL'];
 
 
     useEffect(() => {
@@ -78,7 +79,7 @@ function Details() {
 
 
     if (!product) {
-        return <p>Loading...</p>
+        return <Loading />
     } else if (!product && failAlert) {
         return <p>{failAlert}</p>
     }
@@ -188,11 +189,9 @@ function Details() {
             }
 
             // SUCCESS MESSAGE
-            if (tripleChiUser) {
-                setSuccessAlert("Item added to cart and saved to your account");
-            } else {
-                setSuccessAlert("Item added to cart");
-            }
+            
+            setSuccessAlert("Item added to cart");
+            
             setTimeout(() => setSuccessAlert(""), 3000);
 
         } catch (err) {

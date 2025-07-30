@@ -54,6 +54,12 @@ form input {
   border-left: 0;
   border-right: 0;
   outline: none;
+  background-color: transparent;
+}
+
+form textarea {
+  width: 100%;
+  background-color: transparent;
 }
 
 .form-button-container {

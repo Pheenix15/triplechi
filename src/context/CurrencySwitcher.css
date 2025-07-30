@@ -1,7 +1,6 @@
 .currency-switcher {
-    display: flex;
-    justify-content: flex-end;
-    margin: 15px 0;
+  display: flex;
+  margin: 15px 0;
 }
 
 .switch {
