@@ -17,7 +17,6 @@ function Checkout () {
     const [tripleChiUser, setTripleChiUser] = useState(null);
     const [tripleChiUserDetails, setTripleChiUserDetails] = useState({});
     const [totalAmount, setTotalAmount] = useState(0);
-    // const [currency, setCurrency] = useState("USD");
     // const [shippingCost, setShippingCost] = useState(30)
     const [checkoutFormData, setCheckoutFormData] = useState({
         firstName: '',
@@ -27,6 +26,9 @@ function Checkout () {
         address: ''
     });
 
+
+    //CURRENCY
+    const { currency, exchangeRate } = useCurrency()
 
     // SHIPPING COST
     const shippingCost = 30;
@@ -99,10 +101,14 @@ function Checkout () {
         return <span>{displayAmount}</span>;
     };
 
-    // CALCULATE TOTAL AMOUNT PAYABLE
-    const amountPayable = totalAmount + shippingCost;
+    
 
 // LOGIC RELATING TO CHECKOUT AND PAYSTACK
+    
+    // CALCULATE TOTAL AMOUNT PAYABLE
+    const amountPayable = totalAmount + shippingCost;
+    // CONVERT BASED ON SELECTED CURRENCY
+    const convertedAmount = currency === "USD" ? amountPayable : amountPayable * exchangeRate;
 
     // SET checkoutFormData TO tripleChiUserDetails IF USER IS LOGGED IN
     useEffect(() => {
@@ -123,13 +129,14 @@ function Checkout () {
         e.preventDefault() // PREVENTS PAGE RELOAD WHEN FORM IS SUBMITTED
         const paystack = new PaystackPop();
 
-        const totalAmount = Math.floor(Number(amountPayable) * 100);
+        const totalAmount = Math.floor(Number(convertedAmount) * 100);
         console.log('Paystack amount:', totalAmount, typeof totalAmount);
 
         paystack.newTransaction({
             key: process.env.REACT_APP_PAYSTACK_KEY,
             email: checkoutFormData.email,
             amount: totalAmount,
+            currency: currency,
             metadata: {
                 name: `${tripleChiUserDetails.firstName || checkoutFormData.firstName} ${tripleChiUserDetails.lastName || checkoutFormData.lastName}`,
                 phone: tripleChiUserDetails.phoneNumber || checkoutFormData.phoneNumber,

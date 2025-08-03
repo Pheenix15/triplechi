@@ -5,18 +5,22 @@ import Shop from './components/Shop';
 import Details from './components/Details';
 import Gallery from './components/Gallery';
 import Cart from './components/Cart';
+import Admin from './admin/Admin';
 import Checkout from './components/Checkout';
 import Signup from './components/Signup';
 import Login from './components/Login';
 import ReturnRefundPolicy from './components/Return-Refund-Policy';
 import PrivacyPolicy from './components/Privacy-Policy';
 import { CurrencyProvider } from './context/CurrencyContext';
+import AdminDashboard from './admin/AdminDashboard';
 
 function App() {
   return (
     <div className="App">
       <CurrencyProvider>
       <Routes>
+        <Route path='/Admin' Component={Admin} />
+        <Route path='/Admin-Dashboard' Component={AdminDashboard} />
         <Route path='/' Component={Home} />
         <Route path='/Shop' Component={Shop} />
         <Route path='/Details/:id' Component={Details} />

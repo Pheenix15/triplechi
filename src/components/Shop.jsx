@@ -1,6 +1,6 @@
 import { database } from "./firebase";
 import { ref, onValue } from "firebase/database";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useCurrency } from "../context/CurrencyContext";
 import Nav from "./Nav";
@@ -33,6 +33,7 @@ function Shop() {
             } else {
                 setShopProduct([]);
             }
+
         });
 
         setIsLoading(false)
@@ -81,7 +82,7 @@ function Shop() {
                                         <img src= {product.image} alt={product.description} />
                                     </div>
                                     
-                                    <p className="product-description" >{product.description}</p>
+                                    <p className="product-description" >{product.name}</p>
                                     <p className="product-price"><Price amountInDollars={product.price} /></p>
                                 </div>
                             

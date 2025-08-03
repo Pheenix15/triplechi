@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import CurrencySwitcher from '../context/CurrencySwitcher';
 import { auth } from './firebase';
+
 import './Nav.css'
 
 function Nav() {
@@ -78,7 +79,7 @@ function Nav() {
                 </div>
             )}
         </div>
-     );
-}
+    );
+ }
 
 export default Nav;

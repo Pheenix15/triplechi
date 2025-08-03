@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { auth, database } from './firebase';
-import { getDatabase, ref, get, set, remove } from 'firebase/database';
+import { getDatabase, ref, get, update, remove } from 'firebase/database';
 import { useCurrency } from '../context/CurrencyContext';
 import Nav from './Nav';
 import Footer from './Footer';
@@ -11,16 +11,15 @@ import Loading from './Loading';
 
 function Details() {
     const { id } = useParams(); // GETS THE PRODUCT ID FROM SHOP
-    const [product, setProduct] = useState(null);
+    const [product, setProduct] = useState(null); //CLICKED PRODUCT FROM SHOP
     const [similarProducts, setSimilarProducts] = useState([]); // SIMILAR PRODUCT
     const [displayedImage, setDisplayedImage] = useState(null); //SET DISPLAYED IMAGE TO THE CLICKED PRODUCT
     const [size, setSize] = useState(null);
     const [failAlert, setFailAlert] = useState(''); //STATE FOR ERROR ALERTS
     const [successAlert, setSuccessAlert] = useState('') //STATE FOR SUCCESS ALERTS
 
-    const variations = ['M', 'L', 'XL'];
 
-
+    // GETS THE CLICKED ITEM
     useEffect(() => {
         const db = getDatabase();
         const productRef = ref(db, `Product/${id}`); //REF TO DATABASE PRODUCT ID
@@ -38,8 +37,7 @@ function Details() {
 
     }, [id]);
 
-    // GETTING SIMILAR PRODUCTS FROM THE DATABASE
-
+    // GETS SIMILAR PRODUCTS FROM THE DATABASE
     useEffect(() => {
         const db = getDatabase();
         const productRef = ref(db, 'Product');
@@ -69,7 +67,6 @@ function Details() {
     }, [id])
 
     // FOR CHANGING THE DISPLAYED IMAGE
-
     useEffect(() => {
         // PREVENTS PRODUCT.IMAGE FROM BEING ACCESED WHEN IT IS STILL NULL
         if (product) {
@@ -125,7 +122,15 @@ function Details() {
         const syncCartToDatabase = async (cartItems) => {
             if (tripleChiUser) {
                 try {
-                    const cartRef = ref(database, `ShoppingCart/${tripleChiUser.uid}`);
+                    // email@provider.com NOT SUPPORTED FOR KEYS, SO CONVERT TO email@provider_com
+                    const userEmail = tripleChiUser.email.replace(/\./g, "_");
+
+                    // if (!userEmail) {
+                    //     console.log("Email is missing, can't save cart under email path.");
+                    // } else {console.log(userEmail)}
+
+                    //SET USER UID AND USER EMAIL AS KEYS FOR CART (NOTE: ShoppingCart DOES NOT EXIST IN DB UNTIL A LOGGEDIN USER ADDS ITEM TO THEIR CART)
+                    const cartRef = ref(database, `ShoppingCart/${tripleChiUser.uid}/${userEmail}`);
                     
                     if (cartItems.length === 0) {
                         await remove(cartRef);
@@ -140,14 +145,15 @@ function Details() {
                                 size: item.size,
                                 image: item.image,
                                 quantity: item.quantity,
-                                unixTimestamp: item.unixTimestamp,
-                                addedAt: item.addedAt
+                                unixTimestamp: item.unixTimestamp || Date.now(),
+                                addedAt: item.addedAt || new Date().toLocaleString(),
                             };
                         });
-                        await set(cartRef, cartObject);
+                        await update(cartRef, cartObject);
                     }
                 } catch (error) {
                     console.error('Error syncing cart to database:', error);
+
                 }
             }
         };
@@ -258,7 +264,7 @@ function Details() {
                         <div className="product-size">
                             <p className='variation-text'>VARIATIONS:</p>
                             <div className="variations">
-                                {variations.map((value) => (
+                                {product.availableSizes.map((value) => (
                                     <div
                                         key={value}
                                         onClick={() => setSize(value)}

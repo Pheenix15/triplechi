@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth"; //FIREBASE AUTHENTICATION
+import { getStorage } from "firebase/storage";
 
 
 const databaseURL = process.env.REACT_APP_DATABASE_URL;
@@ -29,6 +30,8 @@ const database = getDatabase(app);
 
 const auth = getAuth(app)
 
+const storage =getStorage(app)
 
 
-export { database, auth };
+
+export { database, auth, storage };
