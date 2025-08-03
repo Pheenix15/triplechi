@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { cloudinaryConfig } from "./CloudinaryConfig";
 import { set, ref, push } from "firebase/database";
 import { database } from "../components/firebase";
 
@@ -30,10 +29,10 @@ function AddProduct({openModal, setOpenModal, editingProduct, setEditingProduct,
     }, [isUpdating, editingProduct]);
 
     // CLOUDINARY DATA
-    const cloudName = 'ddhildqrp'
-    const apiKey = process.env.REACT_APP_CLOUDINARY_API_KEY
-    const apiSecret = process.env.REACT_APP_CLOUDINARY_API_SECRET // Only needed for server-side operations
-    const uploadPreset = 'triplechi' // For unsigned uploads
+    const cloudName= process.env.REACT_APP_CLOUD_NAME
+    const uploadPreset= process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET // For unsigned uploads
+
+    
 
     // HANDLE IMAGE UPLOAD TO CLOUDINARY
     const handleImageUpload = async (file) => {

@@ -39,10 +39,13 @@ export const sendCheckoutEmail = async (checkoutFormData, cartItems, transaction
     }).join("\n");
     form.appendChild(createInput("Cart Summary", cartSummary));
 
+
+     // DISABLES REDIRECT
+    form.appendChild(createInput("_next", "https://triplechi.store/Shop"));
+    
     // DISABLES CAPTCHA
     form.appendChild(createInput("_captcha", "false"));
-    // DISABLES REDIRECT
-    form.appendChild(createInput("_redirect", "false"));
+   
     
 
     document.body.appendChild(form);
