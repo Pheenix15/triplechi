@@ -10,7 +10,7 @@ function Sidebar({setSection}) {
             <div className="sidebar-below">
                 {/* switch between sections */}
                 <div onClick={() => setSection("Admin")} className="sidebar-options" >
-                    <i className="fa-solid fa-list"></i>
+                    <i className="fa-solid fa-user-tie"></i>
                     <p>Admin</p>
                 </div>
 
