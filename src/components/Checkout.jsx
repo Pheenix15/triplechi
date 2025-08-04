@@ -3,7 +3,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { database, auth } from './firebase';
 import { ref, onValue, remove } from 'firebase/database';
 import { useCurrency } from '../context/CurrencyContext';
-import PaystackPop from '@paystack/inline-js'
+import PaystackPop from '@paystack/inline-js';
 import { sendCheckoutEmail } from './form';
 import './Nav'
 import './Checkout.css'
@@ -17,7 +17,8 @@ function Checkout () {
     const [tripleChiUser, setTripleChiUser] = useState(null);
     const [tripleChiUserDetails, setTripleChiUserDetails] = useState({});
     const [totalAmount, setTotalAmount] = useState(0);
-    // const [shippingCost, setShippingCost] = useState(30)
+    const [isLoading, setIsLoading] = useState(false)
+    const [shippingCost, setShippingCost] = useState(0)
     const [checkoutFormData, setCheckoutFormData] = useState({
         firstName: '',
         lastName: '',
@@ -27,11 +28,23 @@ function Checkout () {
     });
 
 
-    //CURRENCY
+///////CURRENCY
     const { currency, exchangeRate } = useCurrency()
 
-    // SHIPPING COST
-    const shippingCost = 30;
+////////// SHIPPING COST
+    useEffect(() => {
+        const shippingCostRef = ref(database, "ShippingCost/cost");
+
+        const unsubscribe = onValue(shippingCostRef, (snapshot) => {
+            const cost = snapshot.val();
+            if (cost) {
+            setShippingCost(cost); 
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);
+
 
     // CHECKS IF USER IS LOGGED IN
     useEffect(() => {
@@ -127,6 +140,8 @@ function Checkout () {
      //PAYSTACK CHECKOUT
     const handlePaystackCheckout = (e) => {
         e.preventDefault() // PREVENTS PAGE RELOAD WHEN FORM IS SUBMITTED
+        setIsLoading(true)
+
         const paystack = new PaystackPop();
 
         const totalAmount = Math.floor(Number(convertedAmount) * 100);
@@ -148,8 +163,11 @@ function Checkout () {
                 sendCheckoutEmail(checkoutFormData, cartItems, transaction, totalAmount)
                 // CLEAR CART EVERYWHERE
                 clearCartData(tripleChiUser)
+
+                setIsLoading(false)
             },
             onCancel: () => {
+                setIsLoading(false)
                 console.log("Payment Canclled");
             }
         });
@@ -218,7 +236,7 @@ function Checkout () {
                         <textarea name='Address' placeholder="Address" defaultValue={tripleChiUserDetails.address || checkoutFormData.address} onChange={(e) => setCheckoutFormData ({...checkoutFormData, address: e.target.value})} ></textarea>
 
                         <button type='submit' className="button checkout-button">
-                            Complete Purchase
+                            {isLoading ? 'Processing...' : 'Complete Purchase'}
                         </button>
                     </form> 
                 </div>

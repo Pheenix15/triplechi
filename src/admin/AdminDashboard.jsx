@@ -12,6 +12,7 @@ function AdminDashboard() {
     // KEEPS TRACK OF THE CURRENT SECTION: PRODUCTS OR USERS
     const [section, setSection] = useState("Products");
     const [openModal, setOpenModal] = useState(false) //OPENS THE MODAL
+    const [showShippingModal, setShowShippingModal] = useState(false)// STATE FOR SET SHIPPING COST MODAL
     const [editingProduct, setEditingProduct] = useState(null);//
     const [isUpdating, setIsUpdating] = useState(false);// SWITCHES THE MODAL TO UPDATE MODE
     const [showAdminForm, setShowAdminForm] = useState(false);
@@ -36,7 +37,7 @@ function AdminDashboard() {
 
             <div className="dashboard-container">
                 <div className="dashboard-header">
-                    <DashboardHeader section={section} title={section} setOpenModal={setOpenModal} showAdminForm={showAdminForm} setShowAdminForm={setShowAdminForm} handleLogout={handleLogout} />
+                    <DashboardHeader section={section} title={section} setOpenModal={setOpenModal} showAdminForm={showAdminForm} setShowAdminForm={setShowAdminForm} showShippingModal={showShippingModal} setShowShippingModal={setShowShippingModal} handleLogout={handleLogout} />
                 </div>
 
                 <div className="dashboard-content-container">
@@ -50,6 +51,8 @@ function AdminDashboard() {
                         setEditingProduct={setEditingProduct}
                         showAdminForm={showAdminForm}
                         setShowAdminForm={setShowAdminForm}
+                        showShippingModal={showShippingModal}
+                        setShowShippingModal={setShowShippingModal}
                     />
                     
                 </div>

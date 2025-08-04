@@ -1,4 +1,4 @@
-function DashboardHeader({title, section, setOpenModal, showAdminForm, setShowAdminForm, handleLogout}) {
+function DashboardHeader({title, section, setOpenModal, showAdminForm, setShowAdminForm, setShowShippingModal, handleLogout}) {
     return ( 
         <div className="dashboard-header-content" >
             <h2>
@@ -14,6 +14,10 @@ function DashboardHeader({title, section, setOpenModal, showAdminForm, setShowAd
                     <div className="admin-header-buttons">
                         <button className="button add-button" onClick={() => setShowAdminForm((prev) => !prev)} >
                             {showAdminForm ? "Close Settings" : "Update Admin Info"}
+                        </button>
+
+                        <button className="button add-button update-shipping-button" onClick={() => setShowShippingModal(true)}>
+                            Update Shipping Cost
                         </button>
 
                         <button className="button logout-button" onClick={handleLogout} >Logout</button>

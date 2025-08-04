@@ -4,10 +4,11 @@ import { database, auth } from "../components/firebase";
 import { EmailAuthProvider, reauthenticateWithCredential, verifyBeforeUpdateEmail, updatePassword } from "firebase/auth";
 import AddProduct from "./AddProduct";
 import { onAuthStateChanged } from "firebase/auth";
+import ShippingModal from "./ShippingModal";
 
 
 
-function DashboardContent({section, openModal, setOpenModal,editingProduct, setEditingProduct, isUpdating, setIsUpdating, showAdminForm, setShowAdminForm}) {
+function DashboardContent({section, openModal, setOpenModal,editingProduct, setEditingProduct, isUpdating, setIsUpdating, showAdminForm, setShowAdminForm, showShippingModal, setShowShippingModal}) {
 
     const [data, setData] = useState([]); //SET THE DATA OF THE DASHBOARD
     const [successAlert, setSuccessAlert] = useState('') //STATE FOR SUCCESS ALERTS
@@ -277,6 +278,17 @@ function DashboardContent({section, openModal, setOpenModal,editingProduct, setE
 
                         </form>
                     )}
+
+                    {/* UPDATE SHIPPING COST MODAL */}
+                    {showShippingModal && (
+                        <ShippingModal 
+                            setShowShippingModal={setShowShippingModal}
+                            successAlert={setSuccessAlert}
+                            failAlert={setFailAlert}
+                        />
+                    )}
+
+
                 </div>
             }
 
