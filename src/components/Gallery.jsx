@@ -57,7 +57,7 @@ function Gallery() {
                     <img
                         key={index}
                         src={url}
-                        alt={`Gallery image ${index + 1}`}
+                        alt={`Gallery photo ${index + 1}`}
                         onClick={() => setActiveImageIndex(index)}
                     />
                 ))}

@@ -15,9 +15,9 @@ function Signup() {
     const [successAlert, setSuccessAlert] = useState('')
     const [error, setError] = useState('');
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const location = useLocation();
-    const redirectPath = new URLSearchParams(location.search).get('redirect') || '/'; //REDIRECT FOR USERS ABOUT TO CHECKOUT
+    // const redirectPath = new URLSearchParams(location.search).get('redirect') || '/'; //REDIRECT FOR USERS ABOUT TO CHECKOUT
     
     // 
     const handleSubmit = async (e) => {

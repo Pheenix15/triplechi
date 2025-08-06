@@ -8,7 +8,7 @@ function ShippingModal({ setShowShippingModal, successAlert, setSuccessAlert, fa
     const [selectedCountry, setSelectedCountry] = useState("");
     const [selectedState, setSelectedState] = useState("");
     const [rate, setRate] = useState("");
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
     const [newCountry, setNewCountry] = useState("");
     const [newState, setNewState] = useState("");
@@ -38,7 +38,7 @@ function ShippingModal({ setShowShippingModal, successAlert, setSuccessAlert, fa
         }
 
         try {
-            const updateRef = ref(database, `ShippingRate/${country}/${state}`);
+            // const updateRef = ref(database, `ShippingRate/${country}/${state}`);
             await update(ref(database, `ShippingRate/${country}`), {
                 [state]: parseFloat(rate)
             });
