@@ -8,7 +8,7 @@ function ShippingModal({ setShowShippingModal, successAlert, setSuccessAlert, fa
     const [selectedCountry, setSelectedCountry] = useState("");
     const [selectedState, setSelectedState] = useState("");
     const [rate, setRate] = useState("");
-    // const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [newCountry, setNewCountry] = useState("");
     const [newState, setNewState] = useState("");
@@ -29,6 +29,7 @@ function ShippingModal({ setShowShippingModal, successAlert, setSuccessAlert, fa
     const updateRates = async (e) => {
         e.preventDefault();
 
+        setLoading(true)
         const country = newCountry || selectedCountry;
         const state = newState || selectedState;
 
@@ -43,6 +44,7 @@ function ShippingModal({ setShowShippingModal, successAlert, setSuccessAlert, fa
                 [state]: parseFloat(rate)
             });
 
+            setLoading(false)
             successAlert(`Rate for ${state}, ${country} updated.`);
             setShowShippingModal(false);
             setTimeout(() => successAlert(""), 3000)
