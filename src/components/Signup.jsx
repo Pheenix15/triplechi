@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { auth, database } from './firebase';
 import {ref, set} from 'firebase/database';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import './Auth.css'
 
 function Signup() {
@@ -16,7 +16,7 @@ function Signup() {
     const [error, setError] = useState('');
 
     // const navigate = useNavigate();
-    const location = useLocation();
+    // const location = useLocation();
     // const redirectPath = new URLSearchParams(location.search).get('redirect') || '/'; //REDIRECT FOR USERS ABOUT TO CHECKOUT
     
     // 
