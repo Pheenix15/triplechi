@@ -22,7 +22,7 @@ app.use(express.json());
 
 // SETUP the transporter (the mail-sending engine)
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // We are using Gmail to send the mail
+  service: process.env.EMAIL_SERVICE, // We are using Gmail to send the mail
   auth: {
     user: process.env.ADMIN_EMAIL,       // Replace this with your Gmail address
     pass: process.env.EMAIL_PASS,       // Replace this with your Gmail App Password
