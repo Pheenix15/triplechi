@@ -95,6 +95,24 @@ function Cart() {
 
                     setCartItems(items);
 
+                    // REFRENCE FOR UPDATING THE STOCK IN DB
+                    const stockPromises = items.map(async (item) => {
+                        const productRef = ref(database, `Product/${item.id}`);
+                        const snapshot = await get(productRef);
+                        return snapshot.exists() ? snapshot.val().stock : 0;
+                    });
+
+                    const stocks = await Promise.all(stockPromises);
+
+                    // ATTACH stocks TO EACH ITEM IN CART
+                    const cartWithStock = items.map((item, i) => ({
+                        ...item,
+                        stock: stocks[i],
+                    }));
+
+                    setCartItems(cartWithStock);
+                    saveCartToLocalStorage(cartWithStock);
+
                     // SAVE TO LOCALSTORAGE FOR FASTER ACCESS
                     saveCartToLocalStorage(items);
                 } else {
@@ -168,23 +186,48 @@ function Cart() {
     // CART QUANTITY CHANGE
     const handleCartQuantityChange = async (index, type) => {
         try {
-            const updatedItems = cartItems.map((item, i) => {
-                if (i === index) {
-                    const newQuantity = type === 'increase' ? item.quantity + 1 : Math.max(1, item.quantity - 1);
-                    return { ...item, quantity: newQuantity };
+            const updatedItems = [...cartItems];
+            const item = updatedItems[index];
+
+            const productRef = ref(database, `Product/${item.id}`);
+            const snapshot = await get(productRef);
+
+            if (!snapshot.exists()) {
+                setFailAlert("Product no longer exists.");
+                setTimeout(() => setFailAlert(""), 3000);
+                return;
+            }
+
+            const currentStock = snapshot.val().stock;
+            let newQuantity = item.quantity;
+
+            if (type === 'increase') {
+                if (currentStock <= 0) {
+                    setFailAlert("No more stock available.");
+                    setTimeout(() => setFailAlert(""), 3000);
+                    return;
                 }
-                return item;
-            });
+
+                newQuantity += 1;
+                await set(productRef, {
+                    ...snapshot.val(),
+                    stock: currentStock - 1
+                });
+
+            } else if (type === 'decrease' && item.quantity > 1) {
+                newQuantity -= 1;
+                await set(productRef, {
+                    ...snapshot.val(),
+                    stock: currentStock + 1
+                });
+            }
+
+            updatedItems[index].quantity = newQuantity;
+            updatedItems[index].stock = type === 'increase' ? currentStock - 1 : currentStock + 1;
 
             setCartItems(updatedItems);
-            
-            // Update localStorage
             saveCartToLocalStorage(updatedItems);
-            
-            // Update database if user is logged in
-            if (tripleChiUser) {
-                await syncLocalCartToDatabase(updatedItems);
-            }
+            if (tripleChiUser) await syncLocalCartToDatabase(updatedItems);
 
             setSuccessAlert("Cart updated successfully");
             setTimeout(() => setSuccessAlert(""), 3000);
@@ -193,7 +236,8 @@ function Cart() {
             setFailAlert("Failed to update quantity");
             setTimeout(() => setFailAlert(""), 3000);
         }
-    }
+    };
+
 
 
     // CALCULATE CART SUBTOTAL
@@ -286,7 +330,13 @@ function Cart() {
                                             <span>{item.quantity}</span>
 
                                             <button
-                                             onClick={() => handleCartQuantityChange(index, 'increase')} >
+                                             onClick={() => handleCartQuantityChange(index, 'increase')}
+                                             disabled={item.stock <=0}
+                                             style={{
+                                                backgroundColor: item.stock <= 0 ? 'red' : 'inherit',
+                                                cursor: item.stock <= 0 ? 'not-allowed' : 'pointer'
+                                             }}
+                                             >
                                                 <i className="fa-solid fa-square-plus"></i>
                                             </button>
                                         </div>

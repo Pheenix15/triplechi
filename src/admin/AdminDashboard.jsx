@@ -16,6 +16,10 @@ function AdminDashboard() {
     const [editingProduct, setEditingProduct] = useState(null);//
     const [isUpdating, setIsUpdating] = useState(false);// SWITCHES THE MODAL TO UPDATE MODE
     const [showAdminForm, setShowAdminForm] = useState(false);
+    const [galleryType, setGalleryType] = useState('Image')
+    const [openImageModal, setOpenImageModal] = useState(false);// OPENS GALLERY ADD IMAGE MODAL
+    const [openMusicModal, setOpenMusicModal] = useState(false);
+
 
     ////LOG ADMIN OUT
     const handleLogout = async () => {
@@ -37,7 +41,7 @@ function AdminDashboard() {
 
             <div className="dashboard-container">
                 <div className="dashboard-header">
-                    <DashboardHeader section={section} title={section} setOpenModal={setOpenModal} showAdminForm={showAdminForm} setShowAdminForm={setShowAdminForm} showShippingModal={showShippingModal} setShowShippingModal={setShowShippingModal} handleLogout={handleLogout} />
+                    <DashboardHeader section={section} title={section} setOpenModal={setOpenModal} showAdminForm={showAdminForm} setShowAdminForm={setShowAdminForm} showShippingModal={showShippingModal} setShowShippingModal={setShowShippingModal} handleLogout={handleLogout} galleryType={galleryType} setGalleryType={setGalleryType} setOpenImageModal={setOpenImageModal} setOpenMusicModal={setOpenMusicModal} />
                 </div>
 
                 <div className="dashboard-content-container">
@@ -53,6 +57,12 @@ function AdminDashboard() {
                         setShowAdminForm={setShowAdminForm}
                         showShippingModal={showShippingModal}
                         setShowShippingModal={setShowShippingModal}
+                        galleryType={galleryType}
+                        setGalleryType={setGalleryType}
+                        openImageModal={openImageModal}
+                        setOpenImageModal={setOpenImageModal}
+                        openMusicModal={openMusicModal}
+                        setOpenMusicModal={setOpenMusicModal}
                     />
                     
                 </div>

@@ -26,6 +26,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button:disabled {
+  background-color: var(--darkgray);
+  cursor: not-allowed;
+}
+
 .button {
   padding: 10px 25px;
   border-radius: 5px;

@@ -68,6 +68,13 @@
     background-color: var(--lightgray);
 }
 
+.location-select {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
 @media (max-width: 769px) {
      .checkout {
         display: flex;

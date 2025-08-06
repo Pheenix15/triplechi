@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { auth, database } from './firebase';
 import {ref, set} from 'firebase/database';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import './Auth.css'
 
@@ -12,6 +12,7 @@ function Signup() {
     const [lastName, setLastName] = useState('');
     const [address, setAddress] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [successAlert, setSuccessAlert] = useState('')
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
@@ -25,10 +26,13 @@ function Signup() {
         try {
             // CREATE NEW USER
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const uid = userCredential.user.uid;
+            const user = userCredential.user;
+
+            // SEND VERIFICATION EMAIL
+            await sendEmailVerification(user);
 
             // SAVE ADDITIONAL DETAILS TO REALTIMEDATABASE
-            await set(ref(database, `users/${uid}`), {
+            await set(ref(database, `users/${user.uid}`), {
                 firstName,
                 lastName,
                 address,
@@ -36,7 +40,34 @@ function Signup() {
                 email,
             });
 
-        navigate(redirectPath);
+            // ADD USER DETAILS TO MAILCHIMP    
+            const mailchimpResult = await fetch('http://localhost:5000/api/mailchimp/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email,
+                    firstName,
+                    lastName,
+                    address,
+                    phoneNumber
+                })
+            });
+
+            const mailchimpResponse = await mailchimpResult.json();
+
+            if (mailchimpResult.ok) {
+                console.log('Successfully added to Mailchimp');
+            } else {
+                console.error('Mailchimp subscription failed:', mailchimpResponse.error);
+            }
+
+
+            setSuccessAlert("Signup successful! Please check your email to verify your account.")
+            setTimeout(() => setSuccessAlert(""), 5000)
+
+            // navigate(redirectPath);
 
         } catch (err) {
         setError(err.message);
@@ -58,6 +89,9 @@ function Signup() {
 
                     <form onSubmit={handleSubmit} className='form' >
                         <h2>Sign Up</h2>
+                        {successAlert && (
+                            <div className="alert success-alert">{successAlert}</div>
+                        )}
                         {error && <p className='auth-error' >{error}</p>}
 
                         <input 

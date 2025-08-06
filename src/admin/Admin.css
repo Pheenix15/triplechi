@@ -79,6 +79,11 @@
     box-shadow: unset !important;
 }
 
+.gallery-header-options {
+    display: flex;
+    gap: 10px;
+}
+
 
 /* DASHBOARD CONTENT */
 
@@ -96,6 +101,63 @@
 .admin-form-button button {
     background-color: var(--black);
     color: var(--white);
+}
+
+/* GALLERY SECTION */
+.gallery-thumbnails {
+    column-count: 3;
+    column-gap: 16px;
+    padding: 20px;
+}
+.thumbnail {
+    break-inside: avoid;
+    margin-bottom: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px var(--lightgray);
+    cursor: pointer;
+    width: 100px;
+}
+
+@media (max-width: 900px) {
+    .gallery-grid {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 600px) {
+    .gallery-grid {
+        column-count: 1;
+    }
+}
+
+.delete-popup {
+    box-sizing: border-box;
+    width: 330px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 5px 0px var(--darkgray);
+    z-index: 100;
+}
+
+.popup-buttons {
+    margin-bottom: 10px;
+}
+
+.popup-buttons .delete-button {
+    margin-right: 5px;
+}
+
+/* GALLERY MODAL OVERLAY */
+.gallery-dashboard .modal-overlay {
+    padding: 20px 10px;
+    width: 50%;
+}
+
+.gallery-dashboard .modal {
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* SHIPPING COST MODAL */
@@ -262,6 +324,7 @@
     .sidebar-below {
         display: flex;
         gap: 30px;
+        overflow: scroll;
     }
 
     .sidebar-options {

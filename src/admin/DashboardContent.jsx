@@ -3,18 +3,25 @@ import { ref, onValue, remove, update, get } from "firebase/database";
 import { database, auth } from "../components/firebase";
 import { EmailAuthProvider, reauthenticateWithCredential, verifyBeforeUpdateEmail, updatePassword } from "firebase/auth";
 import AddProduct from "./AddProduct";
+import AddGalleryImage from './AddGalleryImage'
+import AddGalleryMusic from "./AddGalleryMusic";
 import { onAuthStateChanged } from "firebase/auth";
 import ShippingModal from "./ShippingModal";
 
 
 
-function DashboardContent({section, openModal, setOpenModal,editingProduct, setEditingProduct, isUpdating, setIsUpdating, showAdminForm, setShowAdminForm, showShippingModal, setShowShippingModal}) {
+function DashboardContent({section, openModal, setOpenModal,editingProduct, setEditingProduct, isUpdating, setIsUpdating, showAdminForm, setShowAdminForm, showShippingModal, setShowShippingModal, openImageModal, setOpenImageModal, openMusicModal, setOpenMusicModal}) {
 
     const [data, setData] = useState([]); //SET THE DATA OF THE DASHBOARD
     const [successAlert, setSuccessAlert] = useState('') //STATE FOR SUCCESS ALERTS
     const [failAlert, setFailAlert] = useState('')
     const [newEmail, setNewEmail] = useState('')
     const [newPassword, setNewPassword] = useState('')
+    const [galleryType, setGalleryType] = useState('Image')//THIS SETS THE GALLERY CONTENT TO IMAGES OF MUSIC
+    const [galleryImages, setGalleryImages] = useState([]); //FOR WHEN galleryType === Images
+    const [imageToDelete, setImageToDelete] = useState(null); // HOLDS IMAGE ID WHEN DELETE IS REQUESTED
+    
+
 
     useEffect(() => {
         // PRODUCTS LIST
@@ -106,6 +113,86 @@ function DashboardContent({section, openModal, setOpenModal,editingProduct, setE
         // }
 
     }, [section]);
+
+//////FETCHES IMAGES FROM Gallery DATABASE
+    useEffect(() => {
+        if (section === "Gallery" && galleryType === "Images") {
+            const imagesRef = ref(database, "Gallery/images");
+
+            const unsubscribe = onValue(imagesRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const imageList = Object.entries(data).map(([id, url]) => ({
+                id,
+                url,
+                }));
+                setGalleryImages(imageList);
+            } else {
+                setGalleryImages([]);
+            }
+            });
+
+            return () => unsubscribe();
+        }  
+    }, [section, galleryType]);
+
+    //DELETES IMAGE FROM DB
+    const confirmImageDelete = async (id) => {
+        try {
+            const imageRef = ref(database, `Gallery/images/${id}`);
+            await remove(imageRef);
+            setImageToDelete(null);
+
+            setSuccessAlert("Image deleted successfully.")
+            setTimeout(() => setSuccessAlert(''), 3000)
+        } catch (error) {
+            console.error("Error deleting image:", error.message);
+            setFailAlert("Failed to delete Image:" + error.message)
+            setTimeout(() => setFailAlert(''), 3000)
+        }
+    };
+
+////////FETCHES MUSIC FROM GALLERY
+    useEffect(() => {
+        if (section === "Gallery" && galleryType === "Music") {
+            const musicRef = ref(database, "Gallery/music");
+
+            const unsubscribe = onValue(musicRef, (snapshot) => {
+            const musicData = snapshot.val();
+            if (!musicData) {
+                setData([]); // you likely already have `data` as state
+                return;
+            }
+
+            const musicList = Object.entries(musicData).map(([id, item]) => ({
+                id,
+                name: item.name,
+                url: item.url,
+            }));
+
+            setData(musicList);
+            });
+
+            return () => unsubscribe();
+        }
+    }, [section, galleryType]);
+
+    // DELETES MUSIC
+    const handleDeleteMusic = async (id) => {
+        const confirmDelete = window.confirm("Delete this music file?");
+        if (!confirmDelete) return;
+
+        try {
+            await remove(ref(database, `Gallery/music/${id}`));
+            setSuccessAlert("Music deleted successfully.");
+            setTimeout(() => setSuccessAlert(""), 3000);
+        } catch (err) {
+            console.error("Error deleting music:", err);
+            setFailAlert("Failed to delete music.");
+            setTimeout(() => setFailAlert(""), 3000);
+        }
+    };
+////////////////////////
 
 ///// DELETES PRODUCTS FROM DATABASE
     const handleDelete = async (productId) => {
@@ -387,6 +474,83 @@ function DashboardContent({section, openModal, setOpenModal,editingProduct, setE
                 ))
             }
 
+            {/* GALLERY */}
+            {section === "Gallery" && (
+                <div className="gallery-dashboard">
+
+                    {openImageModal && (
+                    <AddGalleryImage setOpenImageModal={setOpenImageModal} />
+                    )}
+
+                    {openMusicModal && ( 
+                    
+                        <AddGalleryMusic setOpenMusicModal={setOpenMusicModal} />
+                    )}
+                    <div className="gallery-header">
+                    <button
+                        className={`button logout-button ${galleryType === "Images" ? "active" : ""}`}
+                        onClick={() => setGalleryType("Images")}
+                    >
+                        Images
+                    </button>
+                    <button
+                        className={`button add-button ${galleryType === "Music" ? "active" : ""}`}
+                        onClick={() => setGalleryType("Music")}
+                    >
+                        Music
+                    </button>
+                    </div>
+
+                    <div className="gallery-content">
+                    {galleryType === "Images" ? (
+                        // DISPLAY IMAGES
+                        <div className="gallery-thumbnails">
+                            {galleryImages.map((img) => (
+                            <div key={img.id} className="thumbnail-wrapper">
+                                <div className="thumbnail" onClick={() => setImageToDelete(img.id)} title="Click to delete" >
+                                    <img src={img.url} alt={`Gallery ${img.id}`} />
+                                </div>
+
+                                {/* // IMAGE TO DELETE POPUP */}
+                                {imageToDelete === img.id && (
+                                    <div className="delete-popup">
+                                        <p>Delete this image?</p>
+                                        <div className="popup-buttons">
+                                            <button onClick={() => confirmImageDelete(img.id)} className="button delete-button" >Yes</button>
+                                            <button onClick={() => setImageToDelete(null)} className="button update-button" >Cancel</button>
+                                        </div>
+                                    </div>
+                                )}
+
+                            </div>
+
+                            ))}
+                        </div>
+                    ) : (
+                        // MUSIC DISPLAY
+                        <div className="music-list">
+                            {data.length === 0 ? (
+                            <p>No music uploaded.</p>
+                            ) : (
+                                data.map((track) => (
+                                    <div key={track.id} className="music-item">
+                                    <p>{track.name}</p>
+                                    <audio controls src={track.url} />
+                                    <button
+                                        className="delete-button button"
+                                        onClick={() => handleDeleteMusic(track.id)}
+                                    >
+                                        Delete
+                                    </button>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    )}
+                    </div>
+                </div>
+            )}
+
             {/* SHOPPING CART */}
             {/* {section === "Shopping Cart" &&
                 (data.length === 0 ? (
@@ -416,6 +580,7 @@ function DashboardContent({section, openModal, setOpenModal,editingProduct, setE
                     failAlert={failAlert}
                 />
             )}
+
         </div>
      );
 }

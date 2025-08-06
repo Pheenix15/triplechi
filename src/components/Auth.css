@@ -57,6 +57,13 @@ form input {
   background-color: transparent;
 }
 
+form select {
+  padding: 10px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid;
+}
+
 form textarea {
   width: 100%;
   background-color: transparent;

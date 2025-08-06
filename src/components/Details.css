@@ -12,8 +12,19 @@
 }
 
 .product-detail-image {
-    width: 100%;
+    width: 500px;
     border-radius: 5px;
+}
+
+.update-quantity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.update-quantity input {
+    height: 25px;
+    text-align: center;
 }
 
 .image-variation {
@@ -46,9 +57,13 @@
     padding: 5px 0;
 }
 
-.product-detail-description {
+.product-detail-name {
     margin: 0 0 50px 0;
     font-size: 3.5em;
+}
+
+.product-detail-description {
+    font-weight: 200;
 }
 
 .product-detail-price {
@@ -64,7 +79,7 @@
 
 .outOfStock {
     margin: 0;
-    color: red;
+    color: var(--red);
     font-size: 0.7em;
 }
 

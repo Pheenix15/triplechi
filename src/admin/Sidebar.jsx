@@ -24,6 +24,11 @@ function Sidebar({setSection}) {
                     <p>Users</p>
                 </div>
 
+                <div onClick={() => setSection("Gallery")} className="sidebar-options" >
+                    <i className="fa-solid fa-images"></i>
+                    <p>Gallery</p>
+                </div>
+
                 {/* <div onClick={() => setSection("Shopping Cart")} className="sidebar-options" >
                     Shopping Cart
                 </div> */}

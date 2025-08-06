@@ -44,12 +44,11 @@ function Shop() {
 
     // CURRENCY CONVERTER
     const Price = ({ amountInDollars }) => {
-        const { currency } = useCurrency();
+        const { currency, exchangeRate } = useCurrency();
 
-        const convertToNaira = (usd) => usd * 1500; // Use actual conversion API or static rate
         const displayAmount =
             currency === "NGN"
-                ? `₦${convertToNaira(amountInDollars).toLocaleString()}`
+                ? `₦${(amountInDollars * exchangeRate).toLocaleString()}`
                 : `$${amountInDollars.toFixed(2)}`;
 
         return <span>{displayAmount}</span>;

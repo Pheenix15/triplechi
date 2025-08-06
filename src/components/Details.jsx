@@ -12,6 +12,7 @@ import Loading from './Loading';
 function Details() {
     const { id } = useParams(); // GETS THE PRODUCT ID FROM SHOP
     const [product, setProduct] = useState(null); //CLICKED PRODUCT FROM SHOP
+    const [quantity, setQuantity] = useState(1) //SET QUANTITY OF THE PRODUCT
     const [similarProducts, setSimilarProducts] = useState([]); // SIMILAR PRODUCT
     const [displayedImage, setDisplayedImage] = useState(null); //SET DISPLAYED IMAGE TO THE CLICKED PRODUCT
     const [size, setSize] = useState(null);
@@ -90,7 +91,7 @@ function Details() {
         return "Out of stock"
     }
 
-    //ADD TO CART
+///////ADD TO CART
 
     const handleAddToCart = async () => {
         const tripleChiUser = auth.currentUser
@@ -177,7 +178,7 @@ function Details() {
                 price: product.price,
                 size,
                 image: displayedImage,
-                quantity: 1,
+                quantity: quantity,
                 unixTimestamp: Date.now(),
                 addedAt: new Date().toLocaleString(),
                 // Don't add shoppingCartKey here - it will be added when syncing to database
@@ -194,6 +195,11 @@ function Details() {
                 await syncCartToDatabase(updatedCart);
             }
 
+            // UPDATE PRODUCT STOCK IN DATABASE
+            const updatedStock = product.stock - quantity;
+            const productRef = ref(database, `Product/${id}`);
+            await update(productRef, { stock: updatedStock });
+
             // SUCCESS MESSAGE
             
             setSuccessAlert("Item added to cart");
@@ -206,6 +212,7 @@ function Details() {
         }
 
     };
+////////
 
     // CURRENCY SWITCHING
     const Price = ({ amountInDollars }) => {
@@ -254,8 +261,21 @@ function Details() {
 
                     <div className="details-section">
                         <div className="product-detail-details">
-                            <p className="product-detail-description">{product.name}</p>
-                            <p className="product-detail-price"><Price amountInDollars={product.price}/></p>
+                            <p className="product-detail-name">{product.name}</p>
+                            <p className="product-detail-description">{product.description}</p>
+                            {/* SET QUANTITY */}
+                            <div className="update-quantity">
+                                <p>Quantity:</p>
+                                <input
+                                type="number"
+                                min="1"
+                                max={product.stock} // optional: prevent selecting more than in stock
+                                value={quantity}
+                                onChange={(e) => setQuantity(Number(e.target.value))}
+                                />
+                            </div>
+                            
+                            <p className="product-detail-price"><Price amountInDollars={product.price * quantity}/></p>
                             <p className={product.stock === 0 ? "outOfStock" : "inStock"}>
                                 {getStockStatus(product.stock)}
                             </p>
@@ -312,7 +332,7 @@ function Details() {
                                 </div>
 
                                 <div className="similar-product-card-details">
-                                    <p className="similar-product-card-description" >{similarProduct.description}</p>
+                                    <p className="similar-product-card-description" >{similarProduct.name}</p>
 
                                     <p className="similar-product-card-price"><Price amountInDollars={similarProduct.price}/></p>
                                 </div>

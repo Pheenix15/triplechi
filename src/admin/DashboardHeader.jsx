@@ -1,4 +1,4 @@
-function DashboardHeader({title, section, setOpenModal, showAdminForm, setShowAdminForm, setShowShippingModal, handleLogout}) {
+function DashboardHeader({title, section, setOpenModal, showAdminForm, setShowAdminForm, setShowShippingModal, handleLogout, setOpenImageModal, setOpenMusicModal}) {
     return ( 
         <div className="dashboard-header-content" >
             <h2>
@@ -22,6 +22,16 @@ function DashboardHeader({title, section, setOpenModal, showAdminForm, setShowAd
 
                         <button className="button logout-button" onClick={handleLogout} >Logout</button>
                     </div>
+                )}
+
+                {section === 'Gallery' && (
+                    <div className="gallery-header-buttons">
+                        <button onClick={() =>setOpenImageModal(true)} className="button add-button" style={{marginRight: '10px'}} >Add Image</button>
+
+                        <button onClick={() =>setOpenMusicModal(true)} className="button add-button" >Add Music</button>
+                    </div>
+                    
+
                 )}
             </div>
         </div>
