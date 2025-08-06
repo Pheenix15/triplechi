@@ -73,7 +73,7 @@ function Gallery() {
                         ‹
                         </button>
 
-                        <img src={images[activeImageIndex]} className="overlay-image" />
+                        <img src={images[activeImageIndex]} alt='active overlay' className="overlay-image" />
 
                         <button className="nav-btn right" onClick={() => setActiveImageIndex((activeImageIndex + 1) % images.length)}>
                         ›
