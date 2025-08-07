@@ -56,6 +56,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 15px;
 }
 
 .dashboard-header-content h2 {
@@ -104,6 +105,13 @@
 }
 
 /* GALLERY SECTION */
+.gallery-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
 .gallery-thumbnails {
     column-count: 3;
     column-gap: 16px;
@@ -341,6 +349,16 @@
     .mobile-hidden {
         display: none;
     }
+
+    /* DASHBOARD HEADER */
+    .dashboard-header-content {
+        flex-direction: column;
+    }
+
+    .admin-header-buttons button {
+        padding: 15px 10px;
+    }
+
     /* SIDEBAR */
     .side-bar-logo {
         width: 120px;
@@ -357,6 +375,10 @@
 
 
     /* FORM MODAL */
+    .gallery-dashboard .modal-overlay {
+        padding: 20px 10px;
+        width: 80%;
+    }
     .modal-overlay {
         width: 95%;
     }

@@ -163,24 +163,36 @@ function Cart() {
     // REMOVE CARTITEMS FROM DATABASE AND UI
     const handleDelete = async (index) => {
         try {
+            const itemToRemove = cartItems[index];
+
+            // 1. GET PRODUCT ID AND QUANTITY
+            const { id: productId, quantity } = itemToRemove;
+
+            // 2. RESTOCK DB
+            const productRef = ref(database, `Product/${productId}/stock`);
+            const snapshot = await get(productRef);
+            const currentStock = snapshot.exists() ? snapshot.val() : 0;
+
+            await set(productRef, currentStock + quantity);
+
+            // 3. REMOVE ITEM FROM CART IN UI AND LOCALSTORAGE
             const updatedItems = cartItems.filter((_, i) => i !== index);
             setCartItems(updatedItems);
-            
-            // Update localStorage
             saveCartToLocalStorage(updatedItems);
-            
-            // Update database if user is logged in
+
+            // 4. SYNC WITH DB IF LOGGEDIN
             if (tripleChiUser) {
                 await syncLocalCartToDatabase(updatedItems);
             }
-            
-            setSuccessAlert("The item has been removed from your cart")
-            setTimeout(() => setSuccessAlert(""), 3000)
+
+            setSuccessAlert("The item has been removed from your cart");
+            setTimeout(() => setSuccessAlert(""), 3000);
         } catch (err) {
             setFailAlert(`Unable to delete item: ${err.message}`);
-            setTimeout(() => setFailAlert(""), 3000)
+            setTimeout(() => setFailAlert(""), 3000);
         }
-    }
+    };
+
 
 
     // CART QUANTITY CHANGE
