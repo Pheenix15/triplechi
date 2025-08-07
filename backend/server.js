@@ -24,7 +24,7 @@ app.use(express.json());
 const transporter = nodemailer.createTransport({
   host: process.env.HOST,
   port: process.env.SMTP_PORT,
-  secure: false,
+  secure: process.env.SECURE,
   auth: {
     user: process.env.ADMIN_EMAIL,       // Replace this with your Gmail address
     pass: process.env.EMAIL_PASS,       // Replace this with your Gmail App Password
