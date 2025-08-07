@@ -4,7 +4,6 @@ import { database } from "../components/firebase";
 import { Country, State } from "country-state-city";
 
 function ShippingModal({ setShowShippingModal, successAlert, failAlert }) {
-    const [shippingRates, setShippingRates] = useState({});
     const [selectedCountry, setSelectedCountry] = useState("");
     const [selectedState, setSelectedState] = useState("");
     const [rate, setRate] = useState("");
@@ -23,7 +22,7 @@ function ShippingModal({ setShowShippingModal, successAlert, failAlert }) {
         const ratesRef = ref(database, "ShippingRate");
         const unsubscribe = onValue(ratesRef, (snapshot) => {
             const data = snapshot.val();
-            setShippingRates(data || {});
+            setRate(data || {});
         });
         return () => unsubscribe();
     }, []);
