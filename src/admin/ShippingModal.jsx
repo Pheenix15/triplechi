@@ -6,11 +6,13 @@ import { Country, State } from "country-state-city";
 function ShippingModal({ setShowShippingModal, successAlert, failAlert }) {
     const [selectedCountry, setSelectedCountry] = useState("");
     const [selectedState, setSelectedState] = useState("");
+    // const [selectedCity, setSelectedCity] = useState("")
     const [rate, setRate] = useState("");
     const [loading, setLoading] = useState(false);
 
     const [countryList, setCountryList] = useState([]);
     const [stateList, setStateList] = useState([]);
+    // const [cityList, setCityList] = useState([])
 
     // Load all countries once
     useEffect(() => {
@@ -38,22 +40,36 @@ function ShippingModal({ setShowShippingModal, successAlert, failAlert }) {
         }
     }, [selectedCountry]);
 
+    // Update city with list when state changes
+    // useEffect(() => {
+    //     if (selectedCountry && selectedState) {
+    //         const city = City.getCitiesOfState(selectedCountry, selectedState);
+    //         setCityList(city);
+    //         setSelectedCity(""); // Reset city when state changes
+    //     } else {
+    //         setCityList([]);
+    //     }
+    // }, [selectedCountry, selectedState]);
+
     // Submit new rate
     const updateRates = async (e) => {
         e.preventDefault();
         setLoading(true);
 
+        // Converts selectedCountry and state from ISO to Actual Name. For display purposes only
         const countryObj = Country.getCountryByCode(selectedCountry);
         const countryName = countryObj?.name || "";
+        // const stateObj = State.getStateByCode(selectedState);
+        // const stateName = stateObj?.name || "";
 
         if (!selectedCountry || !selectedState || !rate || isNaN(rate)) {
-            failAlert("Please enter a valid country, state, and rate.");
+            failAlert("Please enter a valid country, state, city or rate.");
             setLoading(false);
             return;
         }
 
         try {
-            await update(ref(database, `ShippingRate/${countryName}`), {
+            await update(ref(database, `ShippingRate/${countryName}`), /**${stateName}**/ {
                 [selectedState]: parseFloat(rate),
             });
 
@@ -103,6 +119,21 @@ function ShippingModal({ setShowShippingModal, successAlert, failAlert }) {
                             </option>
                         ))}
                     </select>
+
+                    {/* CITY SELECT */}
+                    {/* <label>City:</label>
+                    <select
+                        value={selectedCity}
+                        onChange={(e) => setSelectedCity(e.target.value)}
+                        disabled={!selectedState}
+                    >
+                        <option value="">Select City </option>
+                        {cityList.map((city) => (
+                            <option key={city.isoCode} value={city.name}>
+                                {city.name}
+                            </option>
+                        ))}
+                    </select> */}
 
                     {/* SHIPPING RATE INPUT */}
                     <label>Shipping Rate ($):</label>

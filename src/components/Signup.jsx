@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { auth, database } from './firebase';
 import {ref, set} from 'firebase/database';
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { Link } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Auth.css'
 
 function Signup() {
@@ -13,23 +13,25 @@ function Signup() {
     const [address, setAddress] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [successAlert, setSuccessAlert] = useState('')
-    const [error, setError] = useState('');
+    const [failAlert, setFailAlert] = useState('');
+    const [isLoading, setIsLoading] = useState(false)
 
-    // const navigate = useNavigate();
-    // const location = useLocation();
-    // const redirectPath = new URLSearchParams(location.search).get('redirect') || '/'; //REDIRECT FOR USERS ABOUT TO CHECKOUT
+    const navigate = useNavigate();
+    const location = useLocation();
+    const redirectPath = new URLSearchParams(location.search).get('redirect') || '/shop'; //REDIRECT FOR USERS ABOUT TO CHECKOUT
     
     // 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        setIsLoading(true)
+        
         try {
             // CREATE NEW USER
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
             // SEND VERIFICATION EMAIL
-            await sendEmailVerification(user);
+            // await sendEmailVerification(user);
 
             // SAVE ADDITIONAL DETAILS TO REALTIMEDATABASE
             await set(ref(database, `users/${user.uid}`), {
@@ -40,37 +42,21 @@ function Signup() {
                 email,
             });
 
-            // ADD USER DETAILS TO MAILCHIMP    
-            const mailchimpResult = await fetch('http://localhost:5000/api/mailchimp/subscribe', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email,
-                    firstName,
-                    lastName,
-                    address,
-                    phoneNumber
-                })
-            });
-
-            const mailchimpResponse = await mailchimpResult.json();
-
-            if (mailchimpResult.ok) {
-                console.log('Successfully added to Mailchimp');
-            } else {
-                console.error('Mailchimp subscription failed:', mailchimpResponse.error);
-            }
-
 
             setSuccessAlert("Signup successful! Please check your email to verify your account.")
             setTimeout(() => setSuccessAlert(""), 5000)
 
-            // navigate(redirectPath);
+            navigate(redirectPath);
+            setIsLoading(false)
 
         } catch (err) {
-        setError(err.message);
+            if(err === 400) {
+                setFailAlert('Email already in use')
+                setTimeout(() => setFailAlert(''), 5000)
+            } else {
+                setFailAlert(err.message)
+                setTimeout(() => setFailAlert(''), 5000)
+            }
         }
     };
 
@@ -92,7 +78,7 @@ function Signup() {
                         {successAlert && (
                             <div className="alert success-alert">{successAlert}</div>
                         )}
-                        {error && <p className='auth-error' >{error}</p>}
+                        {failAlert && <p className='alert fail-alert' >{failAlert}</p>}
 
                         <input 
                         type="text"
@@ -143,7 +129,7 @@ function Signup() {
                         />
 
                         <div className="form-button-container">
-                            <button type="submit" className='button primary-form-button' >Signup</button>
+                            <button type="submit" className='button primary-form-button' >{isLoading ? 'Authenticating...' : 'Signup'}</button>
 
                             <Link to='/Login' ><button className="button secondary-form-button">Or Login</button></Link>
                         </div>

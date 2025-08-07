@@ -1,3 +1,7 @@
+.mobile-visible {
+    display: none;
+}
+
 .footer {
     box-sizing: border-box;
     position: relative;
@@ -45,6 +49,11 @@
     filter: grayscale(100%);
 }
 
+.contact-details {
+    max-width: 195px;
+    text-align: left;
+}
+
 .copyright {
     padding-top: 15px;
     border-top: 1px solid transparent;
@@ -57,16 +66,37 @@
 
 /* MOBILE VIEW */
 @media (max-width: 426px) {
+    .desktop-visible {
+        display: none;
+    }
+
+    .mobile-visible {
+        display: flex;
+    }
+
     .footer {
         padding: 20px
+    }
+    .footer-details {
+        flex-direction: column;
     }
     .footer-logo {
         width: 65px;
     }
 
+    .details {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
     .details h3 {
         margin: 10px 0;
         font-size: 1em;
+    }
+
+    .useful-links {
+        flex-direction: column;
     }
 
     .useful-links .links a {
@@ -77,5 +107,9 @@
     .payment-methods {
         gap: 8px;
         width: 40px;
+    }
+    .contact-details {
+        max-width: unset;
+        font-size: 0.8em;
     }
 }

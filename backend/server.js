@@ -57,7 +57,7 @@ app.post('/send-checkout-email', async (req, res) => {
                 <p><strong>Name:</strong> ${userDetails.firstName} ${userDetails.lastName}</p>
                 <p><strong>Email:</strong> ${userDetails.email}</p>
                 <p><strong>Phone:</strong> ${userDetails.phoneNumber}</p>
-                <p><strong>Address:</strong> ${userDetails.address}</p>
+                <p><strong>Address:</strong> ${userDetails.address}, ${userDetails.state}, ${userDetails.country}</p>
 
                 <h3 style="color: black;">Cart Contents:</h3>
                 <ul style="padding-left: 20px;">

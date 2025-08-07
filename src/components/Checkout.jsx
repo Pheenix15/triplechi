@@ -28,6 +28,8 @@ function Checkout () {
         lastName: '',
         email: '',
         phoneNumber: '',
+        country: '',
+        state: '',
         address: ''
     });
     
@@ -152,6 +154,9 @@ function Checkout () {
         }
     }, [selectedCountry]);
 
+
+    // WHEN A STATE IS SELECTED GET IT'S CITY
+
     // //WHEN A STATE IS SELECTED GET ITS SHIPPING COST
     useEffect(() => {
         if (selectedCountry && selectedState) {
@@ -185,6 +190,15 @@ function Checkout () {
             }));
         }
     }, [tripleChiUserDetails]);
+
+    // KEEPS selectedCountry and selectedState IN SYNC WITH THE FORM
+    useEffect(() => {
+        setCheckoutFormData(prev => ({
+            ...prev,
+            country: selectedCountry,
+            state: selectedState
+        }));
+    }, [selectedCountry, selectedState]);
 
 
      //PAYSTACK CHECKOUT
@@ -221,6 +235,8 @@ function Checkout () {
                         lastName: checkoutFormData.lastName,
                         email: checkoutFormData.email,
                         phoneNumber: checkoutFormData.phoneNumber,
+                        country: checkoutFormData.country,  
+                        state: checkoutFormData.state, 
                         address: checkoutFormData.address
                     },
                     cartItems: cartItems, // Already stored in state
