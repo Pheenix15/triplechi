@@ -345,7 +345,7 @@ function Cart() {
                                              onClick={() => handleCartQuantityChange(index, 'increase')}
                                              disabled={item.stock <=0}
                                              style={{
-                                                backgroundColor: item.stock <= 0 ? 'red' : 'inherit',
+                                                color: item.stock <= 0 ? 'red' : 'inherit',
                                                 cursor: item.stock <= 0 ? 'not-allowed' : 'pointer'
                                              }}
                                              >

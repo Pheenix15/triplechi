@@ -3,7 +3,8 @@ import { ref, get, child } from "firebase/database";
 import { auth, database } from "../components/firebase";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import ResetPassword from "./ResetPassword";
 
 function Admin() {
 
@@ -12,6 +13,9 @@ function Admin() {
     // const [admin, setAdmin] = useState(null);
     const [failAlert, setFailAlert] = useState(''); //STATE FOR ERROR ALERTS
     const [successAlert, setSuccessAlert] = useState('') //STATE FOR SUCCESS ALERTS
+    const [showPassword, setShowPassword] = useState(false); //STATE TO REVIEAL PASSWORD
+    const [showResetPassword, setShowResetPassword] = useState(false);//RESET PASSWORD MODAL
+
     const navigate = useNavigate();
 
 
@@ -38,7 +42,7 @@ function Admin() {
             
                 //Access granted
                 // setAdmin(user); // state to indicate admin is logged in
-
+                localStorage.setItem("isAdmin", "true"); // store login state
                 setSuccessAlert('Welcome Admin');
                 setTimeout(() => setSuccessAlert(''), 3000);
 
@@ -87,14 +91,21 @@ function Admin() {
                             placeholder="Email"
                             required
                         />
-                        <input
-                            name='Password'
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Password"
-                            required
-                        />
+
+                        <div className="password">
+                            <input
+                                name='Password'
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Password"
+                                required
+                            />
+
+                            <span className='password-eye' onClick={() => setShowPassword(!showPassword)}>
+                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            </span>
+                        </div>
 
                         <div className="form-button-container">
                             <button type="submit" className='button primary-form-button' >Login</button>
@@ -102,9 +113,18 @@ function Admin() {
                         
                     </form>
 
-                    <p className="tiny">Forgot your password? <span className="signup-link"></span> </p>
+                    <p className="tiny forgot-password" onClick={() => setShowResetPassword(true)} >Forgot your password? </p>
                 </div>
                 
+                {showResetPassword && (
+                    <ResetPassword
+                        onClose={() => setShowResetPassword(false)}
+                        
+                        setFailAlert={setFailAlert}
+                        setSuccessAlert={setSuccessAlert}
+                    />
+                )}
+
             </div>
             
         </div>

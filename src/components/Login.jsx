@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { auth } from './firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import './Auth.css'
 
 function Login() {
@@ -9,6 +10,7 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false); //STATE TO REVIEAL PASSWORD
     const navigate = useNavigate();
     const location = useLocation();
     const redirectPath = new URLSearchParams(location.search).get('redirect') || '/';
@@ -46,14 +48,20 @@ function Login() {
                             placeholder="Email"
                             required
                         />
-                        <input
-                            name='Password'
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Password"
-                            required
-                        />
+                        <div className='password'>
+                            <input
+                                name='Password'
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Password"
+                                required
+                            />
+
+                            <span className='password-eye' onClick={() => setShowPassword(!showPassword)}>
+                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            </span>
+                        </div>
 
                         <div className="form-button-container">
                             <button type="submit" className='button primary-form-button' >Login</button>

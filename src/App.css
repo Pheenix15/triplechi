@@ -27,6 +27,24 @@ img {
   color: var(--white);
 }
 
+.password {
+  position: relative;
+  width: 100%
+}
+
+.password-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.forgot-password {
+  cursor: pointer; 
+  color: var(--firstPurple);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-6px); }
   to { opacity: 1; transform: translateY(0); }

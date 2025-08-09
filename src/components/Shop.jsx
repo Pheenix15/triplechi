@@ -36,7 +36,8 @@ function Shop() {
 
         });
 
-        setIsLoading(false)
+        setTimeout(() => setIsLoading(false), 6000);
+        
 
         // Clean up the listener on unmount
         return () => productInDB();

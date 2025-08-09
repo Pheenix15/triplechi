@@ -26,7 +26,8 @@ function AdminDashboard() {
         console.log("Clicked")
         try {
             await signOut(auth);
-    
+            
+            localStorage.removeItem("isAdmin");
             window.location.href = "/admin"; // REDIRECT TO LOGIN PAGE
         } catch (error) {
             console.error("Logout failed:", error.message);

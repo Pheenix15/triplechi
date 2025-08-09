@@ -13,6 +13,7 @@ import ReturnRefundPolicy from './components/Return-Refund-Policy';
 import PrivacyPolicy from './components/Privacy-Policy';
 import { CurrencyProvider } from './context/CurrencyContext';
 import AdminDashboard from './admin/AdminDashboard';
+import ProtectedRoute from './admin/ProtectedRoute';
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
       <CurrencyProvider>
       <Routes>
         <Route path='/Admin' Component={Admin} />
-        <Route path='/Admin-Dashboard' Component={AdminDashboard} />
+        <Route path='/Admin-Dashboard' element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
         <Route path='/' Component={Home} />
         <Route path='/Shop' Component={Shop} />
         <Route path='/Details/:id' Component={Details} />

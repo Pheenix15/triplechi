@@ -3,6 +3,7 @@ import { auth, database } from './firebase';
 import {ref, set} from 'firebase/database';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import './Auth.css'
 
 function Signup() {
@@ -15,6 +16,7 @@ function Signup() {
     const [successAlert, setSuccessAlert] = useState('')
     const [failAlert, setFailAlert] = useState('');
     const [isLoading, setIsLoading] = useState(false)
+    const [showPassword, setShowPassword] = useState(false); //STATE TO REVIEAL PASSWORD
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -119,14 +121,21 @@ function Signup() {
                         onChange={(e) => setAddress(e.target.value)}
                         required 
                         />
+                        
+                        <div className="password">
+                            <input 
+                            type={showPassword ? "text" : "password"}
+                            placeholder='Password'
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required 
+                            />
 
-                        <input 
-                        type="password"
-                        placeholder='Password'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required 
-                        />
+                            <span className='password-eye' onClick={() => setShowPassword(!showPassword)}>
+                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            </span>
+                        </div>
+                        
 
                         <div className="form-button-container">
                             <button type="submit" className='button primary-form-button' >{isLoading ? 'Authenticating...' : 'Signup'}</button>
