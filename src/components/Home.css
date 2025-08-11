@@ -15,11 +15,18 @@
     position: absolute;
 }
 
+
 .buttons {
     display: flex;
+    opacity: 0;
     gap: 40px;
     margin: 0 auto;
     z-index: 2;
+    transition: opacity 1s ease;
+}
+
+.buttons.fade-in {
+    opacity: 1;
 }
 
 .buttons a {

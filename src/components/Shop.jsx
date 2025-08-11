@@ -1,6 +1,6 @@
 import { database } from "./firebase";
-import { ref, onValue } from "firebase/database";
-import React, { useState, useEffect } from "react";
+import { ref, onValue, get } from "firebase/database";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useCurrency } from "../context/CurrencyContext";
 import Nav from "./Nav";
@@ -12,6 +12,36 @@ import Loading from "./Loading";
 function Shop() {
     const [isLoading, setIsLoading] = useState(true); //LOADING STATE
     const [shopProduct, setShopProduct] = useState([]);//PRODUCTS FROM FIREBASE
+    const [sound, setSound] = useState(null);//STATE FOR BACKGROUND MUCIC
+    const soundRef = useRef(null)
+
+    //GET MUCIC FROM DATABASE
+    useEffect(() => {
+        const fetchSound = async () => {
+            const musicRef = ref(database, 'Gallery/music');
+            const snapshot = await get(musicRef);
+
+            if (snapshot.exists()) {
+                const musicData = snapshot.val();
+                const musicArray = Object.values(musicData);
+                
+                // Pick the first one (or random if preferred)
+                if (musicArray.length > 0) {
+                    setSound(musicArray[0].url); // or random: musicArray[Math.floor(Math.random() * musicArray.length)].url
+                }
+            }
+        };
+
+        fetchSound();
+    }, []);
+
+    //MUSIC CONTROLS
+    useEffect(() => {
+        if(soundRef.current) {
+            soundRef.current.volume = 0.1
+            console.log(soundRef.current.volume);
+        }
+    }, [sound])
 
     useEffect(() => {
         setIsLoading(true);
@@ -68,6 +98,10 @@ function Shop() {
         <div className="shop">
             <Nav />
             <div className="product-list-container">
+                {sound && (
+                    <audio ref={soundRef} src={sound} autoPlay loop />
+                )}
+                
                 <div className="product-list">
                     {shopProduct.map((product) => (
                         <div className="mapped-product-container" key={product.id} >

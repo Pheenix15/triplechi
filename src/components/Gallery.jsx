@@ -6,7 +6,7 @@ import './Gallery.css'
 function Gallery() {
     const [images, setImages] = useState([]);
     const [activeImageIndex, setActiveImageIndex] = useState(null);
-    const [sound, setSound] = useState(null);
+    // const [sound, setSound] = useState(null);
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -28,7 +28,7 @@ function Gallery() {
         fetchImages();
     }, []);
 
-
+    //GET MUCIC FROM DATABASE
     useEffect(() => {
         const fetchSound = async () => {
         const musicRef = ref(database, 'Gallery/music');
@@ -40,7 +40,7 @@ function Gallery() {
             
             // Pick the first one (or random if preferred)
             if (musicArray.length > 0) {
-            setSound(musicArray[0].url); // or random: musicArray[Math.floor(Math.random() * musicArray.length)].url
+            // setSound(musicArray[0].url); // or random: musicArray[Math.floor(Math.random() * musicArray.length)].url
             }
         }
         };
@@ -50,7 +50,7 @@ function Gallery() {
 
     return ( 
         <div className="gallery">
-            <audio src={sound} autoPlay loop />
+            {/* <audio src={sound} autoPlay loop /> */}
 
             <div className="gallery-grid">
                 {images.map((url, index) => (
