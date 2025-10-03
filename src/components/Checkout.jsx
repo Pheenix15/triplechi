@@ -230,9 +230,9 @@ function Checkout () {
                         ? `$${(amountPayable).toFixed(2)}`
                         : `₦${(amountPayable * exchangeRate).toLocaleString()}`
                 };
-                // http://localhost:5000/send-checkout-email(FOR DEV), https://triplechi.onrender.com/send-checkout-email(FOR PRODUCTION)
+                // http://localhost:5000/send-checkout-email(FOR DEV), https://triplechi-store.onrender.com(FOR PRODUCTION)
                 try {
-                    const response = await fetch('https://triplechi.onrender.com/send-checkout-email', {
+                    const response = await fetch('https://triplechi-store.onrender.com', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
