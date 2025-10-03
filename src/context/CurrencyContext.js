@@ -6,7 +6,7 @@ const EXCHANGE_API_URL = "https://v6.exchangerate-api.com/v6/6c8435e80c529cc6284
 const FALLBACK_RATE = 1600; // Hardcoded fallback rate
 
 export const CurrencyProvider = ({ children }) => {
-    const [currency, setCurrency] = useState("USD");
+    const [currency, setCurrency] = useState("NGN"); //SETS THE DEFAULT CURRENCY
     const [exchangeRate, setExchangeRate] = useState(FALLBACK_RATE);
 
     // Fetch exchange rate on mount

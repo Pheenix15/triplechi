@@ -22,7 +22,7 @@ function Checkout () {
     const [shippingCost, setShippingCost] = useState(0) //SHIPPING COST
     const [countryList, setCountryList] = useState([]); //COUNTRY LIST FROM API
     const [stateList, setStateList] = useState([]); //STATE LIST FROM API
-    const [isStateSelected, setIsStateSelected] = useState(false) //CHECKS IF STATE IS SELECTED
+    const [isCountrySelected, setIsCountrySelected] = useState(false) //CHECKS IF A COUNTRY IS SELECTED
     const [selectedCountry, setSelectedCountry] = useState(''); // SELECTED FROM DROPDOWN
     const [selectedCountryCode, setSelectedCountryCode] = useState('') //COUNTRY CODE OF SELECTED COUNTRY
     const [selectedState, setSelectedState] = useState(''); // SELECTED FROM DROPDOWN
@@ -125,6 +125,8 @@ function Checkout () {
     useEffect(() => {
         if (selectedCountry) {
             const states = State.getStatesOfCountry(selectedCountryCode);
+
+            setIsCountrySelected(true)
             setStateList(states);
             setSelectedState(""); // Reset state when country changes
         } else {
@@ -135,17 +137,24 @@ function Checkout () {
 
     ////////// SHIPPING RATES
     useEffect(() => {
-        const shippingRef = ref(database, 'ShippingRate/cost');
+        if (!selectedCountry) return;
+
+        const shippingRef = ref(database, "ShippingRate");
         onValue(shippingRef, (snapshot) => {
             const data = snapshot.val();
-            if (data && selectedState) {
-                setIsStateSelected(true)
-                setShippingCost(data); //set shipping cost to snapshot of shipping ref
+
+            if (data) {
+            // Check if the selected country exists in ShippingRate
+            if (data[selectedCountry]) {
+                setShippingCost(data[selectedCountry]); // Use country-specific rate
+            } else {
+                setShippingCost(data.Standard); // Fallback to standard rate
+            }
             }
         });
-    }, [selectedState]);
+    }, [selectedCountry]);
 
-    //WHEN A STATE IS SELECTED GET ITS SHIPPING COST
+    //WHEN A  IS SELECTED GET ITS SHIPPING COST
     
 
     // CALCULATE TOTAL AMOUNT PAYABLE
@@ -370,7 +379,7 @@ function Checkout () {
 
                         </div>
                         
-                        {isStateSelected && (
+                        {isCountrySelected && (
                             <p className="tiny"style={{
                                 margin: 0,
                                 fontWeight: "bold"

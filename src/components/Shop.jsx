@@ -98,9 +98,10 @@ function Shop() {
         <div className="shop">
             <Nav />
             <div className="product-list-container">
-                {sound && (
+                {/* BACKGROUND SOUND */}
+                {/* {sound && (
                     <audio ref={soundRef} src={sound} autoPlay loop />
-                )}
+                )} */}
                 
                 <div className="product-list">
                     {shopProduct.map((product) => (
