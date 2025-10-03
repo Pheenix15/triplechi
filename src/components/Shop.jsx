@@ -38,8 +38,8 @@ function Shop() {
     //MUSIC CONTROLS
     useEffect(() => {
         if(soundRef.current) {
-            soundRef.current.volume = 0.1
-            console.log(soundRef.current.volume);
+            soundRef.current.volume = 0.6
+            // console.log(soundRef.current.volume);
         }
     }, [sound])
 

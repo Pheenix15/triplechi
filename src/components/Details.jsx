@@ -106,7 +106,7 @@ function Details() {
                 const cart = localStorage.getItem('tripleChiCart');
                 return cart ? JSON.parse(cart) : [];
             } catch (error) {
-                console.error('Error parsing cart from localStorage:', error);
+                // console.error('Error parsing cart from localStorage:', error);
                 return [];
             }
         };
@@ -115,7 +115,7 @@ function Details() {
             try {
                 localStorage.setItem('tripleChiCart', JSON.stringify(items));
             } catch (error) {
-                console.error('Error saving cart to localStorage:', error);
+                // console.error('Error saving cart to localStorage:', error);
             }
         };
 
@@ -153,7 +153,7 @@ function Details() {
                         await update(cartRef, cartObject);
                     }
                 } catch (error) {
-                    console.error('Error syncing cart to database:', error);
+                    // console.error('Error syncing cart to database:', error);
 
                 }
             }

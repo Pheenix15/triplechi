@@ -53,7 +53,7 @@ function AddGalleryMusic({ setOpenMusicModal }) {
       setFileName("");
     } catch (err) {
       setError("Upload failed.");
-      console.error(err);
+      // console.error(err);
     } finally {
       setIsUploading(false);
     }

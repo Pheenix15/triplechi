@@ -55,7 +55,7 @@ function Admin() {
             }
         } catch (error) {
             //AUTH FAILED
-            console.log(error)
+            // console.log(error)
             setFailAlert("Wrong email or password");
             setTimeout(() => setFailAlert(''), 3000);
         }
@@ -64,13 +64,7 @@ function Admin() {
 
     return ( 
         <div className="auth-page login-page">
-            {successAlert && (
-                <div className="alert success-alert">{successAlert}</div>
-            )}
-
-            {failAlert && (
-                <div className="alert fail-alert">{failAlert}</div>
-            )}
+            
             <div className="auth login">
                 <div className="auth-message login-message">
                     <h2>Welcome back!</h2>
@@ -79,7 +73,13 @@ function Admin() {
                 </div>
 
                 <div className="auth-form login-form">
-                    
+                    {successAlert && (
+                        <div className="alert success-alert">{successAlert}</div>
+                    )}
+
+                    {failAlert && (
+                        <div className="alert fail-alert">{failAlert}</div>
+                    )}
                     <form onSubmit={handleLogin} className='form' >
                         <h2>Login</h2>
                         

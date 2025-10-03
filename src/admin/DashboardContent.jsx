@@ -187,7 +187,7 @@ function DashboardContent({section, openModal, setOpenModal,editingProduct, setE
             setSuccessAlert("Music deleted successfully.");
             setTimeout(() => setSuccessAlert(""), 3000);
         } catch (err) {
-            console.error("Error deleting music:", err);
+            // console.error("Error deleting music:", err);
             setFailAlert("Failed to delete music.");
             setTimeout(() => setFailAlert(""), 3000);
         }

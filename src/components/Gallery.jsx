@@ -21,7 +21,7 @@ function Gallery() {
                 console.log('No images found in database');
             }
             } catch (error) {
-            console.error('Error fetching images:', error);
+            // console.error('Error fetching images:', error);
             }
         };
 

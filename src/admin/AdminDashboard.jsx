@@ -23,14 +23,14 @@ function AdminDashboard() {
 
     ////LOG ADMIN OUT
     const handleLogout = async () => {
-        console.log("Clicked")
+        
         try {
             await signOut(auth);
             
             localStorage.removeItem("isAdmin");
             window.location.href = "/admin"; // REDIRECT TO LOGIN PAGE
         } catch (error) {
-            console.error("Logout failed:", error.message);
+            // console.error("Logout failed:", error.message);
         }
     };
 

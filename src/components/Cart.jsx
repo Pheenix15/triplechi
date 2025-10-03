@@ -23,7 +23,12 @@ function Cart() {
             const cart = localStorage.getItem('tripleChiCart');
             return cart ? JSON.parse(cart) : [];
         } catch (error) {
-            console.error('Error parsing cart from localStorage:', error);
+            setFailAlert(`An error occured, please reload the page`)
+
+            setTimeout(() => {
+                setFailAlert('')
+            }, 3000);
+            // console.error('Error parsing cart from localStorage:', error);
             return [];
         }
     };
@@ -32,7 +37,12 @@ function Cart() {
         try {
             localStorage.setItem('tripleChiCart', JSON.stringify(items));
         } catch (error) {
-            console.error('Error saving cart to localStorage:', error);
+            setFailAlert(`An error occured, please reload the page`)
+
+            setTimeout(() => {
+                setFailAlert('')
+            }, 3000);
+            // console.error('Error saving cart to localStorage:', error);
         }
     };
 
@@ -65,7 +75,12 @@ function Cart() {
                     await set(cartRef, cartObject);
                 }
             } catch (error) {
-                console.error('Error syncing cart to database:', error);
+                setFailAlert(`An error occured, please reload the page`)
+
+                setTimeout(() => {
+                    setFailAlert('')
+                }, 3000);
+                // console.error('Error syncing cart to database:', error);
             }
         }
     }, [tripleChiUser]);
@@ -119,7 +134,7 @@ function Cart() {
                     setCartItems([]);
                 }
             } catch (error) {
-                console.error('Error loading cart from database:', error)
+                // console.error('Error loading cart from database:', error)
                 setFailAlert(`Error loading cart from database: ${error}`)
 
                 setTimeout(() => {
@@ -244,7 +259,7 @@ function Cart() {
             setSuccessAlert("Cart updated successfully");
             setTimeout(() => setSuccessAlert(""), 3000);
         } catch (error) {
-            console.error("Failed to update quantity:", error);
+            // console.error("Failed to update quantity:", error);
             setFailAlert("Failed to update quantity");
             setTimeout(() => setFailAlert(""), 3000);
         }

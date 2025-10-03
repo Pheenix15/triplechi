@@ -52,13 +52,30 @@ function Signup() {
             setIsLoading(false)
 
         } catch (err) {
-            if(err === 400) {
-                setFailAlert('Email already in use')
-                setTimeout(() => setFailAlert(''), 5000)
-            } else {
-                setFailAlert(err.message)
-                setTimeout(() => setFailAlert(''), 5000)
+            let errorMsg;
+
+            switch (err.code) {
+            case "auth/email-already-in-use":
+                errorMsg = "This email is already registered. Please use a different one.";
+                break;
+            case "auth/invalid-email":
+                errorMsg = "Please enter a valid email address.";
+                break;
+            case "auth/weak-password":
+                errorMsg = "Password is too weak. Use at least 6 characters.";
+                break;
+            case "auth/network-request-failed":
+                errorMsg = "Network error. Please check your connection and try again.";
+                break;
+            default:
+                errorMsg = "Something went wrong. Please try again.";
             }
+
+            setFailAlert(errorMsg);
+            setTimeout(() => setFailAlert(""), 5000)
+            // console.error(err); // Keep this for debugging
+        } finally {
+            setIsLoading(false)
         }
     };
 
@@ -74,13 +91,16 @@ function Signup() {
                 </div>
 
                 <div className="auth-form signup-form">
+                    {/* FAIL AND SUCCESS ALERT */}
+                    {successAlert && (
+                        <div className="alert success-alert">{successAlert}</div>
+                    )}
 
+                    {failAlert && (
+                        <div className="alert fail-alert">{failAlert}</div>
+                    )}
                     <form onSubmit={handleSubmit} className='form' >
                         <h2>Sign Up</h2>
-                        {successAlert && (
-                            <div className="alert success-alert">{successAlert}</div>
-                        )}
-                        {failAlert && <p className='alert fail-alert' >{failAlert}</p>}
 
                         <input 
                         type="text"

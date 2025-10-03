@@ -48,11 +48,11 @@ function AddProduct({openModal, setOpenModal, editingProduct, setEditingProduct,
             });
             const url = await res.json(); //URL OF UPLOADED IMAGE
             
-            console.log(url.secure_url)
+            // console.log(url.secure_url)
             setImageUrl(url.secure_url);
             return url.secure_url;
         } catch (err) {
-            console.error("Upload failed:", err);
+            // console.error("Upload failed:", err);
 
             setFailAlert("Upload failed:", err)
             throw err;
@@ -103,7 +103,7 @@ function AddProduct({openModal, setOpenModal, editingProduct, setEditingProduct,
             setSuccessAlert(isUpdating ? "Product updated successfully." : "Product added successfully.");
            
         } catch (err) {
-            console.error("Error pushing product:", err);
+            // console.error("Error pushing product:", err);
             setFailAlert("Failed to add product.", err);
         } finally {
             setIsSubmitting(false) //END LOADING

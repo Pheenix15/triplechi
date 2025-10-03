@@ -9,7 +9,8 @@ function Login() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [failAlert, setFailAlert] = useState(''); //STATE FOR ERROR ALERTS
+    const [successAlert, setSuccessAlert] = useState('') //STATE FOR SUCCESS ALERTS
     const [showPassword, setShowPassword] = useState(false); //STATE TO REVIEAL PASSWORD
     const navigate = useNavigate();
     const location = useLocation();
@@ -18,12 +19,17 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault(); //PREVENTS PAGE FROM RELOADING
-        setError('');
+        
         try {
             await signInWithEmailAndPassword(auth, email, password);
+
+            setSuccessAlert("Login successful, Redirecting...")
+            setTimeout(() => setSuccessAlert(''), 3000);
             navigate(redirectPath);
         } catch (err) {
-            setError(err.message);
+            setFailAlert("Wrong email and/or password")
+            setTimeout(() => setFailAlert(''), 3000);
+            // setError(err.message); OLD ERROR ALERT
         }
     };
 
@@ -37,9 +43,19 @@ function Login() {
                 </div>
 
                 <div className="auth-form login-form">
+                    {/* FAIL AND SUCCESS ALERTS */}
+                    {successAlert && (
+                        <div className="alert success-alert">{successAlert}</div>
+                    )}
+
+                    {failAlert && (
+                        <div className="alert fail-alert">{failAlert}</div>
+                    )}
                     <form onSubmit={handleSubmit} className='form' >
                         <h2>Login</h2>
-                        {error && <p className="error">{error}</p>}
+
+                        
+                        {/* LOGIN FORM */}
                         <input
                             name='Email'
                             type="email"

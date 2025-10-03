@@ -3,6 +3,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { database, auth } from './firebase';
 import { ref, onValue, remove } from 'firebase/database';
 import { useCurrency } from '../context/CurrencyContext';
+import { Country, State } from "country-state-city";
 import PaystackPop from '@paystack/inline-js';
 // import { sendCheckoutEmail } from './form';/////////
 import './Nav'
@@ -18,11 +19,13 @@ function Checkout () {
     const [tripleChiUserDetails, setTripleChiUserDetails] = useState({});
     const [totalAmount, setTotalAmount] = useState(0);
     const [isLoading, setIsLoading] = useState(false)
-    const [shippingCost, setShippingCost] = useState(0)
-    const [countries, setCountries] = useState([]);
-    const [states, setStates] = useState([]);
-    const [selectedCountry, setSelectedCountry] = useState('');
-    const [selectedState, setSelectedState] = useState('');
+    const [shippingCost, setShippingCost] = useState(0) //SHIPPING COST
+    const [countryList, setCountryList] = useState([]); //COUNTRY LIST FROM API
+    const [stateList, setStateList] = useState([]); //STATE LIST FROM API
+    const [isStateSelected, setIsStateSelected] = useState(false) //CHECKS IF STATE IS SELECTED
+    const [selectedCountry, setSelectedCountry] = useState(''); // SELECTED FROM DROPDOWN
+    const [selectedCountryCode, setSelectedCountryCode] = useState('') //COUNTRY CODE OF SELECTED COUNTRY
+    const [selectedState, setSelectedState] = useState(''); // SELECTED FROM DROPDOWN
     const [checkoutFormData, setCheckoutFormData] = useState({
         firstName: '',
         lastName: '',
@@ -37,19 +40,6 @@ function Checkout () {
 ///////CURRENCY
     const { currency, exchangeRate } = useCurrency()
 
-////////// SHIPPING COST
-    // useEffect(() => {
-    //     const shippingCostRef = ref(database, "ShippingCost/cost");
-
-    //     const unsubscribe = onValue(shippingCostRef, (snapshot) => {
-    //         const cost = snapshot.val();
-    //         if (cost) {
-    //         setShippingCost(cost); 
-    //         }
-    //     });
-
-    //     return () => unsubscribe();
-    // }, []);
 
 
     // CHECKS IF USER IS LOGGED IN
@@ -97,17 +87,17 @@ function Checkout () {
             const cartRef = ref(database, `ShoppingCart/${tripleChiUser.uid}`);
             remove(cartRef)
             .then(() => {
-                console.log("Cart cleared from database.");
+                // console.log("Cart cleared from database."); DEBUGING
             })
             .catch((error) => {
-                console.error("Error clearing cart from database:", error);
+                // console.error("Error clearing cart from database:", error);
             });
         }
 
         // CLEARS LOCALSTORAGE (whether or not the user is logged in)
         localStorage.removeItem("tripleChiCart");
         setCartItems([]) // CLEARS CART STATE
-        console.log("Cart cleared from localStorage.");
+        // console.log("Cart cleared from localStorage.");
     };
 
     // CURRENCY SWITCHING
@@ -124,54 +114,40 @@ function Checkout () {
 
     
 
-// LOGIC RELATING TO CHECKOUT AND PAYSTACK /////////
+// LOGIC RELATING TO CHECKOUT AND PAYSTACK /////////    
+    
+    //WHEN A COUNTRY IS SELECTED GET ITS STATES
+    useEffect(() => {
+        setCountryList(Country.getAllCountries());
+    }, []);
+
+    // Update state list when country changes
+    useEffect(() => {
+        if (selectedCountry) {
+            const states = State.getStatesOfCountry(selectedCountryCode);
+            setStateList(states);
+            setSelectedState(""); // Reset state when country changes
+        } else {
+            setStateList([]);
+        }
+    }, [selectedCountry, selectedCountryCode]);
+
 
     ////////// SHIPPING RATES
     useEffect(() => {
-        const shippingRef = ref(database, 'ShippingRate');
+        const shippingRef = ref(database, 'ShippingRate/cost');
         onValue(shippingRef, (snapshot) => {
             const data = snapshot.val();
-            if (data) {
-                setCountries(Object.keys(data));
+            if (data && selectedState) {
+                setIsStateSelected(true)
+                setShippingCost(data); //set shipping cost to snapshot of shipping ref
             }
         });
-    }, []);
+    }, [selectedState]);
 
-// ////WHEN A COUNTRY IS SELECTED GET ITS STATES
-    useEffect(() => {
-        if (selectedCountry) {
-            const countryRef = ref(database, `ShippingRate/${selectedCountry}`);
-            onValue(countryRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    setStates(Object.keys(data));
-                }
-            });
-        } else {
-            setStates([]);
-            setSelectedState('');
-            setShippingCost(0);
-        }
-    }, [selectedCountry]);
-
-
-    // WHEN A STATE IS SELECTED GET IT'S CITY
-
-    // //WHEN A STATE IS SELECTED GET ITS SHIPPING COST
-    useEffect(() => {
-        if (selectedCountry && selectedState) {
-            const shippingCostRef = ref(database, `ShippingRate/${selectedCountry}/${selectedState}`);
-            onValue(shippingCostRef, (snapshot) => {
-                const costOfShipping = snapshot.val();
-                if (costOfShipping !== null) {
-                    setShippingCost(costOfShipping);
-                } else {
-                    setShippingCost(0);
-                }
-            });
-        }
-    }, [selectedCountry, selectedState]);
+    //WHEN A STATE IS SELECTED GET ITS SHIPPING COST
     
+
     // CALCULATE TOTAL AMOUNT PAYABLE
     const amountPayable = totalAmount + shippingCost;
     // CONVERT BASED ON SELECTED CURRENCY
@@ -225,7 +201,7 @@ function Checkout () {
                 address: tripleChiUserDetails.address || checkoutFormData.address,
             },
             onSuccess: async (transaction) => {
-                console.log('Payment Success:', transaction);
+                // console.log('Payment Success:', transaction); DEBUGGING
                 //transaction IS CALLED transactionRef IN FORM.JS
                 
                 // OBJECTS THAT WILL BE SENT TO THE BACKEND
@@ -260,20 +236,23 @@ function Checkout () {
                     if (response.ok) {
                         console.log('Email sent successfully:', data);
                     } else {
-                        console.error('Email failed to send:', data);
+                        // console.error('Email failed to send:', data); DEBUGGING
                     }
                 } catch (error) {
-                    console.error('Error sending email:', error);
+                    // console.error('Error sending email:', error); DEBUGGING
                 }
                 
                 // CLEAR CART EVERYWHERE
                 clearCartData(tripleChiUser)
 
                 setIsLoading(false)
+
+                // RELOAD TO SHOP
+                window.location.href = "/shop";
             },
             onCancel: () => {
                 setIsLoading(false)
-                console.log("Payment Canclled");
+                // console.log("Payment Canclled"); DEBUGGING
             }
         });
     };
@@ -364,21 +343,39 @@ function Checkout () {
                         />
 
                         <div className="location-select">
-                            <select name='Country' value={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)} required>
+                            <select name='Country' 
+                                value={selectedCountry} 
+                                onChange={(e) => { 
+                                    setSelectedCountry(e.target.value); 
+                                    setSelectedCountryCode(e.target.selectedOptions[0].dataset.code) 
+                                }} 
+                                required
+                            >
                                 <option value="">Select Your Country</option>
-                                {countries.map((country) => (
-                                    <option key={country} value={country}>{country}</option>
+                                {countryList.map((country) => (
+                                    <option key={country.isoCode} value={country.name} data-code={country.isoCode}>
+                                        {country.name}
+                                    </option>
                                 ))}
                             </select>
 
                             <select name='State' value={selectedState} onChange={(e) => setSelectedState(e.target.value)} required>
                                 <option value="">Select Your State</option>
-                                {states.map((state) => (
-                                    <option key={state} value={state}>{state}</option>
+                                {stateList.map((state) => (
+                                    <option key={state.isoCode} value={state.name}>
+                                        {state.name}
+                                    </option>
                                 ))}
                             </select>
+
                         </div>
                         
+                        {isStateSelected && (
+                            <p className="tiny"style={{
+                                margin: 0,
+                                fontWeight: "bold"
+                            }}>Shipping cost has been updated!</p>
+                        )}
 
                         <textarea required name='Address' placeholder="Address" defaultValue={tripleChiUserDetails.address || checkoutFormData.address} onChange={(e) => setCheckoutFormData ({...checkoutFormData, address: e.target.value})} ></textarea>
 
