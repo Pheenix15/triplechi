@@ -172,6 +172,13 @@ function Details() {
                 return;
             }
 
+            // CHECK IF SIZE IS SELECTED
+            if (!size) {
+                setFailAlert("Please select a size before adding to cart");
+                setTimeout(() => setFailAlert(""), 3000);
+                return;
+            }
+
             const cartItem = {
                 id,
                 name: product.name,
