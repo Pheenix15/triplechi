@@ -12,7 +12,7 @@ const cors = require('cors');
 const app = express();
 
 // SET the port to listen on
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // ALLOWS CORS-Cross Origin Resource Sharing 
 app.use(cors());

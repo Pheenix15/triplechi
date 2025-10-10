@@ -230,9 +230,9 @@ function Checkout () {
                         ? `$${(amountPayable).toFixed(2)}`
                         : `₦${(amountPayable * exchangeRate).toLocaleString()}`
                 };
-                // http://localhost:5000/send-checkout-email(FOR DEV), https://triplechi-store.onrender.com(FOR PRODUCTION)
+                // http://localhost:5000/send-checkout-email(FOR DEV), https://triplechi-store.onrender.com/send-checkout-email(FOR PRODUCTION)
                 try {
-                    const response = await fetch('https://triplechi-store.onrender.com', {
+                    const response = await fetch('https://triplechi-store.onrender.com/send-checkout-email', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -243,12 +243,12 @@ function Checkout () {
                     const data = await response.json();
 
                     if (response.ok) {
-                        console.log('Email sent successfully:', data);
+                        // console.log('Email sent successfully:', data); DEBUGGING
                     } else {
-                        // console.error('Email failed to send:', data); DEBUGGING
+                        console.error('Email failed to send:', data);
                     }
                 } catch (error) {
-                    // console.error('Error sending email:', error); DEBUGGING
+                    console.error('Error sending email:', error);
                 }
                 
                 // CLEAR CART EVERYWHERE
@@ -261,7 +261,7 @@ function Checkout () {
             },
             onCancel: () => {
                 setIsLoading(false)
-                // console.log("Payment Canclled"); DEBUGGING
+                console.log("Payment Canclled");
             }
         });
     };
