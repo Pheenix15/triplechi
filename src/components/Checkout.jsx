@@ -232,7 +232,7 @@ function Checkout () {
                 };
                 // http://localhost:5000/send-checkout-email(FOR DEV), https://triplechi-store.onrender.com/send-checkout-email(FOR PRODUCTION)
                 try {
-                    const response = await fetch('https://triplechi-store.onrender.com/send-checkout-email', {
+                    const response = await fetch('http://localhost:5000/send-checkout-email', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -257,7 +257,7 @@ function Checkout () {
                 setIsLoading(false)
 
                 // RELOAD TO SHOP
-                window.location.href = "/shop";
+                // window.location.href = "/shop";
             },
             onCancel: () => {
                 setIsLoading(false)
