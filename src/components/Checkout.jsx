@@ -232,7 +232,7 @@ function Checkout () {
                 };
                 // http://localhost:5000/send-checkout-email(FOR DEV), https://triplechi-store.onrender.com/send-checkout-email(FOR PRODUCTION)
                 try {
-                    const response = await fetch('https://triplechi-store.onrender.com/send-checkout-email', {
+                    const response = await fetch('https://triplechi.onrender.com/send-checkout-email', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -243,7 +243,7 @@ function Checkout () {
                     const data = await response.json();
 
                     if (response.ok) {
-                        // console.log('Email sent successfully:', data); DEBUGGING
+                        console.log('Email sent successfully:', data);
                     } else {
                         console.error('Email failed to send:', data);
                     }
