@@ -24,6 +24,7 @@ function DashboardContent({section, openModal, setOpenModal,editingProduct, setE
     const [selectedOrderDetails, setSelectedOrderDetails] = useState(null) //SETS WHICH OREDE DETAILS WAS SELECTED
 
 
+    //RETRIEVES ALL DATA FROM DATABASE
     useEffect(() => {
         // PRODUCTS LIST
         if (section === "Products") {
@@ -311,6 +312,25 @@ function DashboardContent({section, openModal, setOpenModal,editingProduct, setE
         return () => unsubscribe();
     }, []);
 
+    ///// DELETES ORDERS FROM DATABASE
+    const handleOrderDelete = async (orderId) => {
+        if (!window.confirm("Are you sure you want to delete this order?")) return;
+
+        try {
+            const ordersRef = ref(database, `Orders/${orderId}`);
+            await remove(ordersRef);
+
+            console.log("order deleted successfully.");
+            setSuccessAlert("Order deleted successfully.")
+            setTimeout(() => setSuccessAlert(''), 3000)
+
+        } catch (err) {
+            console.error("Failed to delete order:", err);
+            setFailAlert("Failed to delete order:", err)
+            setTimeout(() => setFailAlert(''), 3000)
+        }
+    };
+
 
 
     return ( 
@@ -561,6 +581,7 @@ function DashboardContent({section, openModal, setOpenModal,editingProduct, setE
                                     <th>Currency</th>
                                     <th>Total Amount</th>
                                     <th>Show Cart</th>
+                                    <th>Delete Order</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -578,6 +599,15 @@ function DashboardContent({section, openModal, setOpenModal,editingProduct, setE
                                             setSelectedOrderDetails(order);
                                             setShowCart(true)
                                         }} >Show Cart</button></td>
+
+                                        <td className="table-data">
+                                            <button
+                                                className="delete-button button"
+                                                onClick={() => handleOrderDelete(order.orderId)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
