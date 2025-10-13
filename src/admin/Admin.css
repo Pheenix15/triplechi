@@ -338,6 +338,51 @@
     background-color: var(--black);
 }
 
+/* ORDERS SECTION */
+ul {
+    list-style: none;
+}
+.orders-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.order-user-details {
+    padding-bottom: 20px;
+}
+
+.order-user-details td {
+    width: 250px;
+}
+
+.order-header {
+    background-color: var(--firstPurple);
+    color: var(--white);
+    padding: 0 20px;
+}
+
+/* CART MODAL */
+.show-cart-modal-content {
+    display: flex;
+    flex-direction: column !important;
+    align-items: unset !important;
+    padding: 0 !important;
+}
+
+.show-cart-modal-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--firstPurple);
+    color: var(--white);
+    padding: 5px 20px;
+}
+
+.dashboard-cart-item {
+    padding: 0 20px;
+}
+
 /* TABLET VIEW */
 @media (max-width: 769px) {
     .admin-dashboard-page {

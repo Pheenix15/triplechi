@@ -20,7 +20,8 @@ function DashboardContent({section, openModal, setOpenModal,editingProduct, setE
     const [galleryType, setGalleryType] = useState('Image')//THIS SETS THE GALLERY CONTENT TO IMAGES OF MUSIC
     const [galleryImages, setGalleryImages] = useState([]); //FOR WHEN galleryType === Images
     const [imageToDelete, setImageToDelete] = useState(null); // HOLDS IMAGE ID WHEN DELETE IS REQUESTED
-    
+    const [showCart, setShowCart] = useState(false) //SHOW USER CART MODAL WHEN section === Order
+    const [selectedOrderDetails, setSelectedOrderDetails] = useState(null) //SETS WHICH OREDE DETAILS WAS SELECTED
 
 
     useEffect(() => {
@@ -76,41 +77,30 @@ function DashboardContent({section, openModal, setOpenModal,editingProduct, setE
             }
         }
 
-        // SHOOPING CART
-        // if (section === "Shopping Cart") {
-        //     const cartRef = ref(database, "ShoppingCart");
+        //ORDER
+        // ORDERS LIST
+        if (section === "Orders") {
+            const ordersRef = ref(database, "Orders");
+            
+            const unsubscribe = onValue(ordersRef, (snapshot) => {
+                const data = snapshot.val();
+                if (!data) {
+                    setData([]);
+                    return;
+                }
 
-        //     const cartListner = onValue(cartRef, (snapshot) => {
-        //         const cartData = snapshot.val();
-        //         const cartItems = [];
+                const ordersList = Object.entries(data).map(([orderId, order]) => ({
+                    orderId,
+                    ...order,
+                }));
 
-        //         console.log(cartData)
+                setData(ordersList);
+            });
 
-        //         if (!cartData) {
-        //         setData([]);
-        //         return;
-        //         }
-
-        //         // Loop through each userUid
-        //         Object.entries(cartData).forEach(([userUid, usersEmail]) => {
-        //         Object.entries(usersEmail).forEach(([email, products]) => {
-        //             Object.entries(products).forEach(([productId, product]) => {
-        //             cartItems.push({
-        //                 ...product,
-        //                 userUid,
-        //                 email,
-        //                 productId,
-        //             });
-        //             });
-        //         });
-        //         });
-
-        //         console.log(cartItems)
-        //         setData(cartItems);
-        //     });
-
-        //     return () => cartListner();
-        // }
+            return () => unsubscribe();
+                
+        }
+            
 
     }, [section]);
 
@@ -320,6 +310,7 @@ function DashboardContent({section, openModal, setOpenModal,editingProduct, setE
 
         return () => unsubscribe();
     }, []);
+
 
 
     return ( 
@@ -551,21 +542,88 @@ function DashboardContent({section, openModal, setOpenModal,editingProduct, setE
                 </div>
             )}
 
-            {/* SHOPPING CART */}
-            {/* {section === "Shopping Cart" &&
+            {/* ORDERS */}
+            {section === "Orders" && (
                 (data.length === 0 ? (
-                <p>No shopping cart items.</p>
+                    <p>You currently have no orders</p>
                 ) : (
-                data.map((item, index) => (
-                    <div key={index} className="card">
-                        <div>User Email: {item.email}</div>   
-                        <strong>{item.uid}</strong>
-                        <div>Size: {item.size}</div>
-                        <div>Quantity: {item.quantity}</div>
-                        <div>Price: ₦{item.price}</div>
+                    <div className="orders-section">
+                        <h3>All Orders</h3>
+                        <table className="order-user-details dashboard-table-container" >
+                            <thead className="order-header table-heading" >
+                                <tr>
+                                    <th>Order Reference</th>
+                                    <th>Date</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Address</th>
+                                    <th>Country</th>
+                                    <th>Currency</th>
+                                    <th>Total Amount</th>
+                                    <th>Show Cart</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.map((order, index) => (
+                                    <tr key={index} className="order-details-row" >
+                                        <td className="table-data" >{order.transactionReference}</td>
+                                        <td className="table-data" >{order.date}</td>
+                                        <td className="table-data" >{order.userDetails?.firstName} {order.userDetails?.lastName}</td>
+                                        <td className="table-data" >{order.userDetails?.email}</td>
+                                        <td className="table-data" >{order.userDetails?.address}, {order.userDetails?.state}</td>
+                                        <td className="table-data" >{order.userDetails?.country}</td>
+                                        <td className="table-data" >{order.currency}</td>
+                                        <td className="table-data" >{order.totalAmount}</td>
+                                        <td className="table-data" ><button className="update-button button" onClick={() => {
+                                            setSelectedOrderDetails(order);
+                                            setShowCart(true)
+                                        }} >Show Cart</button></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+
+                        {showCart && selectedOrderDetails && (
+                            <div className="modal-overlay">
+                                <div className="modal-content show-cart-modal-content ">
+                                    <div className="modal-header show-cart-modal-header">
+                                        <h4>Order Cart — {selectedOrderDetails.transactionReference}</h4>
+
+                                        <button onClick={() => setShowCart(false)}>Close</button>
+                                    </div>
+                                
+                                    {selectedOrderDetails.cartItems?.length > 0 ? (
+                                        <table className="dashboard-cart-item dashboard-table-container">
+                                            <thead className="dashboard-cart-header table-heading">
+                                                <tr>
+                                                    <th>Image</th>
+                                                    <th>Product</th>
+                                                    <th>Size</th>
+                                                    <th>Quantity</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="show-cart-tbody" >
+                                                {selectedOrderDetails.cartItems.map((item, i) => (
+                                                <tr key={i}>
+                                                    <td className=" dashboard-product-image table-data" ><img src={item.image} alt={item.name} /></td>
+                                                    <td className="table-data" >{item.name}</td>
+                                                    <td className="table-data" >{item.size}</td>
+                                                    <td className="table-data" >{item.quantity}</td>
+                                                </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        <p>No items in cart</p>
+                                    )}
+                                
+                                </div>
+                            </div>
+                        )}
+
                     </div>
                 ))
-            ))} */}
+            )}
 
             {/* ADD NEW PRODUCT MODAL */}
             {openModal && section === 'Products' && (

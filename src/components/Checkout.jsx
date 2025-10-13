@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { onAuthStateChanged } from "firebase/auth";
 import { database, auth } from './firebase';
-import { ref, onValue, remove } from 'firebase/database';
+import { ref, onValue, remove, set} from 'firebase/database';
 import { useCurrency } from '../context/CurrencyContext';
 import { Country, State } from "country-state-city";
 import PaystackPop from '@paystack/inline-js';
@@ -243,12 +243,49 @@ function Checkout () {
                     const data = await response.json();
 
                     if (response.ok) {
-                        console.log('Email sent successfully:', data);
+                        // console.log('Email sent successfully:', data); DEBUGGING
                     } else {
                         console.error('Email failed to send:', data);
                     }
                 } catch (error) {
                     console.error('Error sending email:', error);
+                }
+
+                // SEND CHECKOUT DETAILS TO DATABASE AND UPDATE ADMIN DASHBOARD
+                try {
+                    // build order object
+                    const order = {
+                        userDetails: {
+                        firstName: checkoutFormData.firstName,
+                        lastName: checkoutFormData.lastName,
+                        email: checkoutFormData.email,
+                        phoneNumber: checkoutFormData.phoneNumber,
+                        country: checkoutFormData.country,
+                        state: checkoutFormData.state,
+                        address: checkoutFormData.address,
+                        },
+                        cartItems: cartItems, // include size & quantity as you already store them
+                        totalAmount: currency === "USD"
+                        ? Number((amountPayable).toFixed(2))
+                        : Number((amountPayable * exchangeRate).toFixed(2)),
+                        currency,
+                        transactionReference: transaction.reference,
+                        status: "Pending",            // initial status
+                        date: new Date().toLocaleString(), // server timestamp
+                    };
+
+                    // Use the paystack reference as the key under Orders/
+                    const orderRef = ref(database, `Orders/${transaction.reference}`);
+                    await set(orderRef, order);
+
+                    // OPTIONAL: set a separate user->orders index for quick per-user lookup:
+                    // const userOrdersRef = ref(database, `UserOrders/${checkoutFormData.email.replace('.', '_')}/${transaction.reference}`);
+                    // await set(userOrdersRef, { orderRef: `Orders/${transaction.reference}`, createdAt: serverTimestamp() });
+
+                    // console.log("Order saved to database:", transaction.reference); DEBUGGING
+                } catch (err) {
+                    console.error("Failed to save order to DB:", err);
+                    // handle error (show fail alert etc.)
                 }
                 
                 // CLEAR CART EVERYWHERE
@@ -257,7 +294,10 @@ function Checkout () {
                 setIsLoading(false)
 
                 // RELOAD TO SHOP
-                // window.location.href = "/shop";
+                setTimeout(() => {
+                    window.location.href = "/shop";
+                }, 6000);
+                
             },
             onCancel: () => {
                 setIsLoading(false)

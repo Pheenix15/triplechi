@@ -19,6 +19,11 @@ function Sidebar({setSection}) {
                     <p>Products</p>
                 </div>
 
+                <div onClick={() => setSection("Orders")} className="sidebar-options" >
+                    <i className="fa-solid fa-truck-fast"></i>
+                    <p>Orders</p>
+                </div>
+
                 <div onClick={() => setSection("Users")} className="sidebar-options" >
                     <i className="fa-solid fa-users"></i>
                     <p>Users</p>
