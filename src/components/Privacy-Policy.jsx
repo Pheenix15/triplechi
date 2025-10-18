@@ -14,7 +14,7 @@ function PrivacyPolicy() {
                     <article className='policy-content-article' >
 
                         <p className="policy-text">
-                            TripleChi ("we", "our", or "us") values your privacy. This Privacy Policy outlines how we collect, use, disclose, and protect your personal information when you visit our website, purchase our products, or otherwise interact with us.
+                            Chibythem ("we", "our", or "us") values your privacy. This Privacy Policy outlines how we collect, use, disclose, and protect your personal information when you visit our website, purchase our products, or otherwise interact with us.
                         </p>
 
                         <h3>Information We Collect</h3>

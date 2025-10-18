@@ -11,7 +11,7 @@ function Footer() {
                         <div className="footer-logo">
                         <img src="../img/logo-2.png" alt="triplechi logo" />
                         </div>
-                        <h3>Triplechi</h3>
+                        <h3>Chibythem</h3>
                         <div className="social-links"></div>
                     </div>
 
@@ -44,14 +44,14 @@ function Footer() {
                 
                 <div className="contact-details">
                     <p>For assistance, please email our customer service team at:</p>
-                    <a href="mailto:info@triplechi.store "> <i className="fa-solid fa-envelope" style={{marginRight:'10px'}} ></i>info@triplechi.store </a>
+                    <a href="mailto:info@chibythem.store "> <i className="fa-solid fa-envelope" style={{marginRight:'10px'}} ></i>info@chibythem.store </a>
                 </div>
                     
                 
             </div>
 
             <div className="copyright">
-                <p className="tiny">&copy;Triplechi.store {new Date().getFullYear()}.</p>
+                <p className="tiny">&copy;Chibythem.store {new Date().getFullYear()}.</p>
             </div>
         </div>
      );

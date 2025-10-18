@@ -14,7 +14,7 @@ function ReturnRefundPolicy() {
                     <article className='policy-content-article' >
 
                         <p className="policy-text">
-                            At TripleChi, every item is packaged with care. Due to the nature of our products, we do not accept returns, exchanges, or offer refunds for any purchases made through our store.
+                            At Chibythem, every item is packaged with care. Due to the nature of our products, we do not accept returns, exchanges, or offer refunds for any purchases made through our store.
                         </p>
 
                         <h3>All Sales Are Final</h3>

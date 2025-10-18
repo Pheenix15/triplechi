@@ -33,7 +33,7 @@ app.post('/send-checkout-email', async (req, res) => {
       html: `<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #222; max-width: 600px; margin: 0 auto; border: 1px solid #eee;">
               <!-- HEADER -->
               <div style="text-align: center; padding: 20px;">
-                <img src="https://triplechi.store/img/logo-2.png" alt="TripleChi Logo" style="height: 60px; margin-bottom: 10px;" />
+                <img src="https://chibythem.store/img/logo-2.png" alt="TripleChi Logo" style="height: 60px; margin-bottom: 10px;" />
                 <h2 style="margin: 0; color: rgb(128, 0, 150);">New Order Received</h2>
               </div>
 
@@ -60,7 +60,7 @@ app.post('/send-checkout-email', async (req, res) => {
 
               <!-- FOOTER -->
               <div style="background: black; color: white; text-align: center; padding: 15px;">
-                <p style="margin: 0;">— TripleChi Store (Admin Notification)</p>
+                <p style="margin: 0;">— Chibythem Store (Admin Notification)</p>
               </div>
             </div>`,
     });
@@ -68,13 +68,13 @@ app.post('/send-checkout-email', async (req, res) => {
     // User Confirmation Email
     await sendEmail({
       to: userDetails.email, // customer
-      subject: "Your TripleChi Order Confirmation",
+      subject: "Your Chibythem Order Confirmation",
       html: `
             <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #222; max-width: 600px; margin: 0 auto; border: 1px solid #eee;">
           
             <!-- HEADER -->
             <div style="text-align: center; padding: 20px;">
-              <img src="https://triplechi.store/img/logo-2.png" alt="TripleChi Logo" style="height: 60px; margin-bottom: 10px;" />
+              <img src="https://chibythem.store/img/logo-2.png" alt="Chibythem Logo" style="height: 60px; margin-bottom: 10px;" />
               <h2 style="margin: 0; color: rgb(128, 0, 150);">Your order has been confirmed</h2>
             </div>
 
@@ -82,7 +82,7 @@ app.post('/send-checkout-email', async (req, res) => {
             <div style="padding: 20px;">
               <p>Hi ${userDetails.firstName},</p>
 
-              <p>Thank you for shopping with <strong>TripleChi</strong>. Your order has been received and is being processed.</p>
+              <p>Thank you for shopping with <strong>Chibythem</strong>. Your order has been received and is being processed.</p>
 
               <h3 style="color: black;">Order Summary:</h3>
               <ul style="padding-left: 20px;">
@@ -96,12 +96,12 @@ app.post('/send-checkout-email', async (req, res) => {
               <p><strong>Transaction Reference:</strong> ${transactionReference}</p>
               <p><strong>Total Paid:</strong> ${totalAmount}</p>
 
-              <p>We’ll contact you once your order has been delivered.</p>
+              <p>We’ll contact you once your order has been shipped.</p>
             </div>
 
             <!-- FOOTER -->
             <div style="background: black; color: white; text-align: center; padding: 15px;">
-              <p style="margin: 0;">— TripleChi Store</p>
+              <p style="margin: 0;">— Chibythem Store</p>
             </div>
           </div>
       `,
